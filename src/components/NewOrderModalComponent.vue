@@ -47,7 +47,64 @@
         label="Comment"
         style="width: 100%;"
       />
-            <q-select
+      <div id="items-select-div">
+        <!-- <q-btn label="Clothing Items" color="primary" @click="selectItems = true" /> -->
+          <q-btn outline style="color: goldenrod;" label="Clothing Items" @click="selectItems = true" />
+       
+            <q-dialog v-model="selectItems">
+      <q-card>
+        <q-card-section>
+          <div class="text-h6">Submitted item(s) & quantity</div>
+        </q-card-section>
+
+        <q-separator />
+
+        <q-card-section style="max-height: 50vh" class="scroll">
+            <q-list separator>
+                <q-item v-for="item in options" :key="item.name">
+                    <q-item-section style="font-size: small;">{{ item.name }}</q-item-section>
+                    <q-item-section>
+                                                    <q-knob
+      :min="1"
+      :max="10"
+      v-model="item.qty"
+      show-value
+      size="40px"
+      :thickness="0.22"
+      color="deep-orange"
+      track-color="orange-3"
+      class="q-ma-md"
+    />
+                    </q-item-section>
+                </q-item>
+            </q-list>
+          <!-- <p v-for="item in options" :key="item.name">{{ item.name }}
+                            <q-knob
+      :min="1"
+      :max="10"
+      v-model="item.qty"
+      show-value
+      size="40px"
+      :thickness="0.22"
+      color="deep-orange"
+      track-color="orange-3"
+      class="q-ma-md"
+    />
+    </p> -->
+        </q-card-section>
+
+        <q-separator />
+
+        <q-card-actions align="right">
+          <q-btn flat label="Cancel" color="primary" v-close-popup />
+          <q-btn flat label="Accept" color="primary" v-close-popup />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+
+
+      </div>
+            <!-- <q-select
         label="Items"
         transition-show="flip-up"
         transition-hide="flip-down"
@@ -55,7 +112,8 @@
         v-model="model"
         :options="options"
         style="width: 100%;"
-      />
+      /> -->
+
       <!-- <q-tr :props="props">
                   <q-td key="desc" :props="props">
             {{ props.items?.name }}
@@ -122,20 +180,27 @@ const props = defineProps({
 })
 const name = ref()
 //const accept = ref()
+// const itemQty = ref(1)
+// const right = ref()
+const selectItems = ref(false)
 const age = ref()
-const model = ref()
+//const model = ref()
 const pickup = ref(["Home delivery", "Store"])
 const options = ref([
-    'Shirt (long-sleeve)',
-    'Shirt (short-sleeve)',
-    'Polo',
-    'Jeans',
-    'Native (male)',
-    'Skirt (corporate)',
-    'Skirt (mini)',
-    'Native (female)',
-    'Curtain (6x6)',
-    'Bedsheet (large)'
+    {name: 'Shirt (long-sleeve)', qty: 1},
+    {name:'Shirt (short-sleeve)', qty: 1},
+    {name:'Polo', qty: 1},
+    {name:'Jeans', qty: 1},
+    {name:'Native (male)', qty: 1},
+    {name:'Skirt (corporate)', qty: 1},
+    {name:'Skirt (mini)', qty: 1},
+    {name:'Native (female)', qty: 1},
+    {name:'Curtain (6x6)', qty: 1},
+    {name:'Bedsheet (large)', qty: 1},
+    {name:'Chinos', qty: 1},
+    {name:'Round-neck', qty: 1},
+    {name:'Suit (male)', qty: 1},
+    {name:'Suit (female)', qty: 1},
 ])
 const visible = ref(props.modalValue)
 //const modalData = ref(props.data)
