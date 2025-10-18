@@ -26,12 +26,41 @@
         </q-item>
    
     </div>
+    <!---->
+        <div id="summary-row">
+        <q-item>
+                    <q-item-section side top>
+                        <q-item-label style="font-size: large;">0</q-item-label>
+                        <q-item-label><strong>Remaining Today</strong></q-item-label>
+          <q-item-label caption>Next Delivery 10/21</q-item-label>
+          
+        </q-item-section>
+        </q-item>
+                <q-item>
+                    <q-item-section side top>
+                        <q-item-label style="font-size: large;">112</q-item-label>
+                        <q-item-label><strong>New</strong></q-item-label>
+          <q-item-label caption>Last just added</q-item-label>
+         
+        </q-item-section>
+        </q-item>
+                <q-item>
+                    <q-item-section side top>
+                        <q-item-label style="font-size: large;">2</q-item-label>
+                        <q-item-label><strong>Tomorrow</strong></q-item-label>
+          <q-item-label caption>First Delivery 09:45</q-item-label>
+      
+        </q-item-section>
+        </q-item>
+   
+    </div>
+    <!---->
     <div class="bar-div">
    
   <!---->
   <!-- <q-item-label>Males/Females</q-item-label>       -->
   <Chart
-  :size="{ width: 500, height: 400 }"
+  :size="{ width: 500, height: 300 }"
   :data="data"
   :margin="margin"
   :direction="direction"
@@ -62,7 +91,7 @@
     <template #main="{ width }">
       <Chart
         direction="circular"
-        :size="{ width: 500, height: 400 }"
+        :size="{ width: 450, height: 300 }"
         :data="data"
         :margin="{
           left: Math.round((width - 360)/2),
@@ -153,7 +182,7 @@ const direction = ref<Direction>('horizontal')
 }
 .responsive {
     width: 100%;
-    height: 400px;
+    height: 200px;
     padding: 6px;
     /* background-color: yellow; */
 }

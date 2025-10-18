@@ -11,7 +11,7 @@
       <br>
       <div id="table-div">
     <q-table
-     title="Available garments"
+     title="Price list"
       :rows="cleaningCost"
       :columns="columns"
       row-key="id"

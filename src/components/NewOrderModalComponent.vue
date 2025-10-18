@@ -68,6 +68,7 @@
                       </q-item-section>
                       <q-item-section style="font-size: small;">
                       <q-item-label>{{ item.name }}</q-item-label>
+                      <q-item-label caption v-if="item.checked">{{ item.qty }} {{ item.name }}(s)</q-item-label>
                       </q-item-section>
                        <q-item-section >
                       <q-knob
@@ -84,6 +85,8 @@
                      </q-item-section>
                     <!-- <q-item-section>
                     </q-item-section> -->
+                    
+       
                 </q-item>
             </q-list>
                 <!-- <div class="q-px-sm q-mt-sm">
