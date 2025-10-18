@@ -62,22 +62,33 @@
         <q-card-section style="max-height: 50vh" class="scroll">
             <q-list separator>
                 <q-item v-for="item in options" :key="item.name">
-                    <q-item-section style="font-size: small;">{{ item.name }}</q-item-section>
-                    <q-item-section>
-                                                    <q-knob
-      :min="1"
-      :max="10"
-      v-model="item.qty"
-      show-value
-      size="40px"
-      :thickness="0.22"
-      color="deep-orange"
-      track-color="orange-3"
-      class="q-ma-md"
-    />
-                    </q-item-section>
+                    <!-- <q-item-section style="font-size: small;">{{ item.name }}</q-item-section> -->
+                     <q-item-section >
+                      <q-checkbox v-model="item.checked"/>
+                      </q-item-section>
+                      <q-item-section style="font-size: small;">
+                      <q-item-label>{{ item.name }}</q-item-label>
+                      </q-item-section>
+                       <q-item-section >
+                      <q-knob
+                         :min="1"
+                         :max="10"
+                         v-model="item.qty"
+                         show-value
+                         size="60px"
+                         :thickness="0.22"
+                         color="deep-orange"
+                         track-color="orange-3"
+                         class="q-ma-md"
+                       />
+                     </q-item-section>
+                    <!-- <q-item-section>
+                    </q-item-section> -->
                 </q-item>
             </q-list>
+                <!-- <div class="q-px-sm q-mt-sm">
+      Your selection is: <strong>{{  }}</strong>
+    </div> -->
           <!-- <p v-for="item in options" :key="item.name">{{ item.name }}
                             <q-knob
       :min="1"
@@ -182,25 +193,26 @@ const name = ref()
 //const accept = ref()
 // const itemQty = ref(1)
 // const right = ref()
-const selectItems = ref(false)
+const selectItems = ref(false) // open select garments list modal
+//const selectedItems = ref([]) // The items booked
 const age = ref()
 //const model = ref()
 const pickup = ref(["Home delivery", "Store"])
 const options = ref([
-    {name: 'Shirt (long-sleeve)', qty: 1},
-    {name:'Shirt (short-sleeve)', qty: 1},
-    {name:'Polo', qty: 1},
-    {name:'Jeans', qty: 1},
-    {name:'Native (male)', qty: 1},
-    {name:'Skirt (corporate)', qty: 1},
-    {name:'Skirt (mini)', qty: 1},
-    {name:'Native (female)', qty: 1},
-    {name:'Curtain (6x6)', qty: 1},
-    {name:'Bedsheet (large)', qty: 1},
-    {name:'Chinos', qty: 1},
-    {name:'Round-neck', qty: 1},
-    {name:'Suit (male)', qty: 1},
-    {name:'Suit (female)', qty: 1},
+    {name: 'Shirt (long-sleeve)', qty: 1, checked: false},
+    {name:'Shirt (short-sleeve)', qty: 1, checked: false},
+    {name:'Polo', qty: 1, checked: false},
+    {name:'Jeans', qty: 1, checked: false},
+    {name:'Native (male)', qty: 1, checked: false},
+    {name:'Skirt (corporate)', qty: 1, checked: false},
+    {name:'Skirt (mini)', qty: 1, checked: false},
+    {name:'Native (female)', qty: 1, checked: false},
+    {name:'Curtain (6x6)', qty: 1, checked: false},
+    {name:'Bedsheet (large)', qty: 1, checked: false},
+    {name:'Chinos', qty: 1, checked: false},
+    {name:'Round-neck', qty: 1, checked: false},
+    {name:'Suit (male)', qty: 1, checked: false},
+    {name:'Suit (female)', qty: 1, checked: false},
 ])
 const visible = ref(props.modalValue)
 //const modalData = ref(props.data)

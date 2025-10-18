@@ -189,20 +189,27 @@ const menuList = [
     separator: false,
     isActive: false
   },
-  {
-    icon: 'support_agent',
-    label: 'Customers',
-    route: '/customers',
+    {
+    icon: 'dry_cleaning',
+    label: 'Items',
+    route: '/items',
     separator: false,
     isActive: false
   },
   {
-    icon: 'dry_cleaning',
-    label: 'Category',
-    route: '/category',
+    icon: 'support_agent',
+    label: 'Customers',
+    route: '/customers',
     separator: true,
     isActive: false
   },
+  // {
+  //   icon: 'dry_cleaning',
+  //   label: 'Category',
+  //   route: '/category',
+  //   separator: true,
+  //   isActive: false
+  // },
   {
     icon: 'help',
     iconColor: 'primary',
