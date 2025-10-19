@@ -12,7 +12,7 @@
       <div id="table-div">
     <q-table
      title="Price list"
-      :rows="cleaningCost"
+      :rows="fabricsArray"
       :columns="columns"
       row-key="id"
       flat
@@ -47,14 +47,18 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import { cleaningCost } from 'src/dummy-data';
+import { fabricsArray } from 'src/dummy-data';
 
 const item = ref() // For search box
 type RowType = [number, string, string]
 type AlignType = "left" | "center" | "right";
-    const  columns = [
-        { name: 'garment', label: 'Garment', field: 'garment', align: 'left' as AlignType },
-        { name: 'cost', label: 'Cost', field: 'cost', align: 'right' as AlignType }
+    // const  columns = [
+    //     { name: 'garment', label: 'Garment', field: 'garment', align: 'left' as AlignType },
+    //     { name: 'cost', label: 'Cost', field: 'cost', align: 'right' as AlignType }
+    //   ];
+        const  columns = [
+        { name: 'name', label: 'Garment', field: 'name', align: 'left' as AlignType },
+        { name: 'price', label: 'Price', field: 'price', align: 'right' as AlignType }
       ];
     // const  rows = [
     //     { id: 1, garment: 'T-Shirt', cost: '15' },

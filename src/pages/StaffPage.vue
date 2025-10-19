@@ -6,7 +6,7 @@
           <q-icon name="search" />
         </template>
       </q-input>
-       <q-btn square color="deep-orange" icon="add" id="new-staff" size="xs"/>
+       <q-btn square color="deep-orange" icon="add" id="new-staff" size="xs" @click="prompt = true"/>
       </div>
       <br/>
       <div id="table-div">
@@ -40,6 +40,33 @@
       </template>
     </q-table>
     </div>
+    <div class="q-pa-md q-gutter-sm">
+          <q-dialog v-model="prompt" persistent>
+      <q-card style="min-width: 350px">
+        <q-card-section>
+          <div class="text-h6">Add user</div>
+        </q-card-section>
+
+        <q-card-section class="q-pt-none">
+          <q-input dense v-model="name" hint="username" autofocus @keyup.enter="prompt = false" />
+        </q-card-section>
+                <q-card-section class="q-pt-none">
+          <q-input dense v-model="email" hint="user email" @keyup.enter="prompt = false" />
+        </q-card-section>
+        <br/>
+                <q-card-section class="q-pt-none">
+          <q-item-label caption>User role</q-item-label>
+                                <q-radio v-model="role" val="admin" label="Admin" />
+      <q-radio v-model="role" val="user" label="User" />
+        </q-card-section>
+
+        <q-card-actions align="right" class="text-primary">
+          <q-btn flat label="Cancel" v-close-popup />
+          <q-btn flat label="Add user" v-close-popup @click="addNewUser(name, email, role)" />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+    </div>
     </q-page>
 </template>
 
@@ -50,6 +77,17 @@ type RowType = [number, string, string, string]
 type AlignType = "left" | "center" | "right";
 
 const staff = ref()
+const name = ref()
+const email = ref()
+const prompt = ref(false)
+const role = ref()
+
+function addNewUser(uname:string,umail:string,urole:string ) {
+  alert(`New User: ${uname} - ${umail} - ${urole}`)
+  name.value = null;
+  email.value = null;
+  role.value = null;
+}
 
 const columns = [
         { name: 'email', label: 'Email', field: 'email', align: 'left' as AlignType },

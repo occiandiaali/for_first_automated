@@ -11,3 +11,23 @@ export const cleaningCost = [
     {id: 10, garment: 'Bedsheet (large)', cost:900},
     {id: 11, garment: 'Bedsheet (small)', cost:400},
 ]
+
+export const fabricsArray = [
+    {id: 1, name: 'Shirt (long)', qty: 1, price:400,checked: false},
+    {id: 2,name:'Shirt (short)', qty: 1, price:300,checked: false},
+    {id: 3,name:'Polo', qty: 1, price:300,checked: false},
+    {id: 4,name:'Jeans', qty: 1, price:500,checked: false},
+    {id: 5,name:'Native (male)', qty: 1, price:900,checked: false},
+    {id: 6,name:'Skirt (corporate)', qty: 1, price:600,checked: false},
+    {id: 7,name:'Skirt (mini)', qty: 1, price:400,checked: false},
+    {id: 8,name:'Native (female)', qty: 1, price:400,checked: false},
+    {id: 9,name:'Curtain (6x6)', qty: 1, price:1400,checked: false},
+    {id: 10,name:'Bedsheet (large)', qty: 1, price:800,checked: false},
+    {id: 11,name:'Chinos', qty: 1, price:750,checked: false},
+    {id: 12,name:'Round-neck', qty: 1, price:200,checked: false},
+    {id: 13,name:'Suit (male)', qty: 1, price:1400,checked: false},
+    {id: 14,name:'Suit (female)', qty: 1, price:1000,checked: false},
+    {id: 15,name:'Bedsheet (small)', qty: 1, price:400, checked: false},
+    {id: 16,name:'Trouser (male)', qty: 1, price:700, checked: false},
+    {id: 17,name:'Trouser (female)', qty: 1, price:600, checked: false},
+]

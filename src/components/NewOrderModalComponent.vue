@@ -9,7 +9,7 @@
         <q-separator />
 
         <q-card-section style="max-height: 50vh" class="scroll">
-            <!-- <p>{{ modalData }}</p> -->
+      
             <div class="q-pa-md" style="max-width: 340px">
 
     <q-form
@@ -48,27 +48,29 @@
         style="width: 100%;"
       />
       <div id="items-select-div">
-        <!-- <q-btn label="Clothing Items" color="primary" @click="selectItems = true" /> -->
+
           <q-btn outline style="color: goldenrod;" label="Clothing Items" @click="selectItems = true" />
        
             <q-dialog v-model="selectItems">
       <q-card>
         <q-card-section>
-          <div class="text-h6">Submitted item(s) & quantity</div>
+          <div class="text-h6">Checked-in item(s)</div>
         </q-card-section>
 
         <q-separator />
 
         <q-card-section style="max-height: 50vh" class="scroll">
             <q-list separator>
-                <q-item v-for="item in options" :key="item.name">
-                    <!-- <q-item-section style="font-size: small;">{{ item.name }}</q-item-section> -->
+                <q-item v-for="item in options" :key="item.id">
+
                      <q-item-section >
                       <q-checkbox v-model="item.checked"/>
                       </q-item-section>
                       <q-item-section style="font-size: small;">
+                        <!-- <q-item-label caption v-if="item.checked">{{ item.qty }}</q-item-label> -->
                       <q-item-label>{{ item.name }}</q-item-label>
-                      <q-item-label caption v-if="item.checked">{{ item.qty }} {{ item.name }}(s)</q-item-label>
+                      <q-item-label caption >NGN{{ item.price*item.qty }}</q-item-label>
+
                       </q-item-section>
                        <q-item-section >
                       <q-knob
@@ -76,35 +78,16 @@
                          :max="10"
                          v-model="item.qty"
                          show-value
-                         size="60px"
-                         :thickness="0.22"
+                         size="80px"
+                         :thickness="0.3"
                          color="deep-orange"
                          track-color="orange-3"
                          class="q-ma-md"
                        />
                      </q-item-section>
-                    <!-- <q-item-section>
-                    </q-item-section> -->
-                    
-       
                 </q-item>
             </q-list>
-                <!-- <div class="q-px-sm q-mt-sm">
-      Your selection is: <strong>{{  }}</strong>
-    </div> -->
-          <!-- <p v-for="item in options" :key="item.name">{{ item.name }}
-                            <q-knob
-      :min="1"
-      :max="10"
-      v-model="item.qty"
-      show-value
-      size="40px"
-      :thickness="0.22"
-      color="deep-orange"
-      track-color="orange-3"
-      class="q-ma-md"
-    />
-    </p> -->
+                
         </q-card-section>
 
         <q-separator />
@@ -115,35 +98,7 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
-
-
-      </div>
-            <!-- <q-select
-        label="Items"
-        transition-show="flip-up"
-        transition-hide="flip-down"
-        filled
-        v-model="model"
-        :options="options"
-        style="width: 100%;"
-      /> -->
-
-      <!-- <q-tr :props="props">
-                  <q-td key="desc" :props="props">
-            {{ props.items?.name }}
-            <q-popup-edit v-model="props.row.name" buttons v-slot="scope">
-              <q-input v-model="scope.value" dense autofocus counter @keyup.enter="scope.set" />
-            </q-popup-edit>
-          </q-td>
-               <q-td key="calories" :props="props">
-            {{ props.row.calories }}
-            <q-popup-edit v-model.number="props.row.calories" buttons v-slot="scope">
-              <q-input type="number" v-model.number="scope.value" dense autofocus @keyup.enter="scope.set" />
-            </q-popup-edit>
-          </q-td>
-      </q-tr> -->
-
-      
+      </div>     
       <q-input
         filled
         type="date"
@@ -186,6 +141,9 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue';
+import { fabricsArray } from 'src/dummy-data';
+
+const options = ref(fabricsArray)
 
 const props = defineProps({
     modalValue: Boolean,
@@ -201,22 +159,7 @@ const selectItems = ref(false) // open select garments list modal
 const age = ref()
 //const model = ref()
 const pickup = ref(["Home delivery", "Store"])
-const options = ref([
-    {name: 'Shirt (long-sleeve)', qty: 1, checked: false},
-    {name:'Shirt (short-sleeve)', qty: 1, checked: false},
-    {name:'Polo', qty: 1, checked: false},
-    {name:'Jeans', qty: 1, checked: false},
-    {name:'Native (male)', qty: 1, checked: false},
-    {name:'Skirt (corporate)', qty: 1, checked: false},
-    {name:'Skirt (mini)', qty: 1, checked: false},
-    {name:'Native (female)', qty: 1, checked: false},
-    {name:'Curtain (6x6)', qty: 1, checked: false},
-    {name:'Bedsheet (large)', qty: 1, checked: false},
-    {name:'Chinos', qty: 1, checked: false},
-    {name:'Round-neck', qty: 1, checked: false},
-    {name:'Suit (male)', qty: 1, checked: false},
-    {name:'Suit (female)', qty: 1, checked: false},
-])
+
 const visible = ref(props.modalValue)
 //const modalData = ref(props.data)
 //const optionsData = ref(props.items)
