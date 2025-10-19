@@ -115,7 +115,7 @@ const thisWeek = [
 ]
 
 const text = ref()
-console.log(text)
+//console.log(text)
 //const heavyList = ref([])
 const newOrderModalOpen = ref(false)
 const itemDetailsModalOpen = ref(false)

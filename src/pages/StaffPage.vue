@@ -55,9 +55,10 @@
         </q-card-section>
         <br/>
                 <q-card-section class="q-pt-none">
-          <q-item-label caption>User role</q-item-label>
+          <q-item-label caption>user role</q-item-label>
                                 <q-radio v-model="role" val="admin" label="Admin" />
       <q-radio v-model="role" val="user" label="User" />
+      <q-item-label v-if="role" caption>Default password: {{ role }}</q-item-label>
         </q-card-section>
 
         <q-card-actions align="right" class="text-primary">
@@ -72,6 +73,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import axios from 'axios';
 
 type RowType = [number, string, string, string]
 type AlignType = "left" | "center" | "right";
@@ -83,10 +85,38 @@ const prompt = ref(false)
 const role = ref()
 
 function addNewUser(uname:string,umail:string,urole:string ) {
-  alert(`New User: ${uname} - ${umail} - ${urole}`)
-  name.value = null;
+  const defaultPassword = urole;
+  //alert(`New User: ${uname}, ${umail}, ${urole} - password:${defaultPassword}`)
+
+  try {
+    const userData = {
+      username:uname,
+      email:umail,
+      password:defaultPassword,
+      role:urole,
+  
+    }
+    axios.post('http://localhost:3000/api/auth/register', userData)
+    .then(response => {
+      console.log('User saved: ', response.data);
+            name.value = null;
   email.value = null;
   role.value = null;
+    })
+    .catch(error => console.error('Error: ', error))
+    // const response = await fetch('http://localhost:6666/api/auth/register', {
+    //   method: 'POST',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //   },
+    //   body: JSON.stringify(userData)
+    // });
+    // const data = await response.json();
+    
+
+  } catch (error) {
+    console.error('Err saving user: ', error)
+  }
 }
 
 const columns = [

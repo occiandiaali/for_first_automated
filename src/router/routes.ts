@@ -1,9 +1,19 @@
 import type { RouteRecordRaw } from 'vue-router';
+import { isAuthenticated } from 'src/helpers/isAuthenticated';
+import { logoutUser } from 'src/helpers/auth';
 
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
     component: () => import('layouts/MainLayout.vue'),
+    beforeEnter: (to, from, next) => {
+      if (!isAuthenticated() && to.name !== 'login') {
+        next ('/login')
+      } else {
+        next()
+      }
+
+    },
     children: [
       // { path: '', component: () => import('pages/IndexPage.vue') },
       {path: '', component: () => import('pages/StorefrontPage.vue')},
@@ -17,6 +27,13 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/login',
     component: () => import('layouts/AuthLayout.vue')
+  },
+  {
+    path: '/logout',
+    redirect: () => {
+      logoutUser();
+      return '/login'
+    }
   },
 
   // Always leave this as last one,

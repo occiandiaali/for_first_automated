@@ -21,7 +21,7 @@
                <q-scroll-area style="height: calc(100% - 150px); margin-top: 150px; border-right: 1px solid #ddd">
           <q-list>
 
-            <template v-for="(menuItem, index) in menuList" :key="index">
+            <template v-for="(menuItem, index) in filteredMenuList" :key="index">
            
               <q-item :to="menuItem.route" exact clickable :active="menuItem.isActive" @click="toggleActiveItem(menuItem.isActive)" v-ripple>
                 <q-item-section avatar>
@@ -43,8 +43,8 @@
               <!-- <img src="https://cdn.quasar.dev/img/boy-avatar.png"> -->
               <img src="https://ionicframework.com/docs/img/demos/avatar.svg">
             </q-avatar>
-            <div class="text-weight-bold">Razvan Stoenescu</div>
-            <!-- <div>@rstoenescu</div> -->
+            <div class="text-weight-bold">{{ uname }}</div>
+            <div>@{{ role }}</div>
           </div>
         </q-img>
     </q-drawer>
@@ -57,7 +57,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import {computed, ref } from 'vue'
+import { getUserRole, getUserName } from 'src/helpers/auth'
+
+const role = ref(getUserRole() || "user");
+const uname = ref(getUserName())
+
 
 const menuList = [
   // {
@@ -70,13 +75,16 @@ const menuList = [
     icon: 'storefront',
     label: 'Storefront',
     route: '/storefront',
+    roles: ['admin', 'sales', 'user'],
     separator: true,
     isActive: true
   },
+
   {
     icon: 'analytics',
     label: 'Dashboard',
     route: '/dashboard',
+     roles: ['admin'],
     separator: false,
     isActive: false
   },
@@ -84,6 +92,7 @@ const menuList = [
     icon: 'people',
     label: 'Staff',
     route: '/staff',
+     roles: ['admin'],
     separator: false,
     isActive: false
   },
@@ -91,6 +100,7 @@ const menuList = [
     icon: 'dry_cleaning',
     label: 'Items',
     route: '/items',
+     roles: ['admin'],
     separator: false,
     isActive: false
   },
@@ -98,6 +108,7 @@ const menuList = [
     icon: 'support_agent',
     label: 'Customers',
     route: '/customers',
+     roles: ['admin', 'sales'],
     separator: true,
     isActive: false
   },
@@ -112,14 +123,21 @@ const menuList = [
     icon: 'help',
     iconColor: 'primary',
     label: 'Help',
+     roles: ['admin', 'user'],
     separator: false
   },
   {
     icon: 'logout',
     label: 'LogOut',
+     roles: ['admin', 'sales', 'user'],
+     route: '/logout',
     separator: false
   },
 ]
+
+const filteredMenuList = computed(() => {
+  return menuList.filter(item => item.roles?.includes(role.value))
+})
 
 const toggleActiveItem = (item:boolean|undefined) => item = !item 
 
@@ -127,6 +145,7 @@ const rightDrawerOpen = ref(false)
 const toggleRightDrawer = () => {
   rightDrawerOpen.value = !rightDrawerOpen.value
 }
+
 
 </script>
 
