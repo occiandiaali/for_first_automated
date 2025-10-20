@@ -58,7 +58,7 @@
       <!-- <q-toggle v-model="accept" label="I accept the license and terms" /> -->
 
       <div>
-        <q-btn label="Submit" type="submit" color="secondary"/>
+        <q-btn :label="`${submitting ? 'Wait..' : 'Submit'}`" type="submit" color="secondary"/>
         <q-btn label="Reset" type="reset" color="danger" flat class="q-ml-sm" />
       </div>
     </q-form>
@@ -76,6 +76,8 @@ import { storeUsername, storeUserRole } from 'src/helpers/auth'
 //const $q = useQuasar()
 const url = 'http://localhost:3000/api/auth/login'
 const router = useRouter()
+
+const submitting = ref(false)
 
 const email = ref(null)
 //const name = ref(null)
@@ -102,6 +104,7 @@ async function onSubmit () {
  
   // }
       try {
+        submitting.value = true;
       const theUser = {email:email.value, password: password.value}
       const response = await axios.post(url, theUser);
       console.log("Successful login: ", response.data)
@@ -114,6 +117,8 @@ async function onSubmit () {
       router.push("/").then(() => console.log("navigating to /...")).catch(e => console.log("push err ", e))
     } catch (error) {
       console.error("axios err ",error)
+    } finally {
+      submitting.value = false
     }
 } // onSubmit
 

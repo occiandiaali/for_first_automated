@@ -1,14 +1,23 @@
 import type { RouteRecordRaw } from 'vue-router';
 import { isAuthenticated } from 'src/helpers/isAuthenticated';
-import { logoutUser } from 'src/helpers/auth';
+import { getUserRole, logoutUser } from 'src/helpers/auth';
 
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
     component: () => import('layouts/MainLayout.vue'),
     beforeEnter: (to, from, next) => {
-      if (!isAuthenticated() && to.name !== 'login') {
+      // if (!isAuthenticated() && to.name !== 'login') {
+      //   next ('/login')
+      // } else {
+      //   next()
+      // }
+      const userRole = getUserRole() || 'user'
+      const requiredRoles = to.meta.roles as string[];
+  if (!isAuthenticated() && to.name !== 'login') {
         next ('/login')
+      } else if (isAuthenticated() && requiredRoles && !requiredRoles.includes(userRole)) {
+        next('/unauthorized')
       } else {
         next()
       }
@@ -16,12 +25,68 @@ const routes: RouteRecordRaw[] = [
     },
     children: [
       // { path: '', component: () => import('pages/IndexPage.vue') },
-      {path: '', component: () => import('pages/StorefrontPage.vue')},
-      { path: '/storefront', component: () => import('pages/StorefrontPage.vue') },
-      { path: '/dashboard', component: () => import('pages/DashboardPage.vue') },
-      { path: '/staff', component: () => import('pages/StaffPage.vue') },
-      { path: '/customers', component: () => import('pages/CustomersPage.vue') },
-      { path: '/items', component: () => import('pages/ItemsPage.vue') },
+      {path: '', component: () => import('pages/StorefrontPage.vue'), meta: {roles: ['admin', 'sales', 'user']}},
+      { path: '/storefront', component: () => import('pages/StorefrontPage.vue'), meta: { roles: ['admin', 'sales', 'user']} },
+      { 
+        path: '/dashboard', 
+        component: () => import('pages/DashboardPage.vue'), 
+        meta: { roles: ['admin']},
+            beforeEnter: (to, from, next) => {
+      const userRole = getUserRole() || 'user'
+      const requiredRoles = to.meta.roles as string[];
+  if (isAuthenticated() && requiredRoles && !requiredRoles.includes(userRole)) {
+        next('/unauthorized')
+      } else {
+        next()
+      }
+
+    },
+       },
+      { 
+        path: '/staff', 
+        component: () => import('pages/StaffPage.vue'), 
+        meta: {roles: ['admin']},
+                    beforeEnter: (to, from, next) => {
+      const userRole = getUserRole() || 'user'
+      const requiredRoles = to.meta.roles as string[];
+  if (isAuthenticated() && requiredRoles && !requiredRoles.includes(userRole)) {
+        next('/unauthorized')
+      } else {
+        next()
+      }
+
+    },
+       },
+      { 
+        path: '/customers', 
+        component: () => import('pages/CustomersPage.vue'), 
+        meta: { roles: ['admin', 'sales']},
+                    beforeEnter: (to, from, next) => {
+      const userRole = getUserRole() || 'user'
+      const requiredRoles = to.meta.roles as string[];
+  if (isAuthenticated() && requiredRoles && !requiredRoles.includes(userRole)) {
+        next('/unauthorized')
+      } else {
+        next()
+      }
+
+    },
+       },
+      {
+         path: '/items', 
+         component: () => import('pages/ItemsPage.vue'), 
+         meta: { roles: ['admin']},
+                     beforeEnter: (to, from, next) => {
+      const userRole = getUserRole() || 'user'
+      const requiredRoles = to.meta.roles as string[];
+  if (isAuthenticated() && requiredRoles && !requiredRoles.includes(userRole)) {
+        next('/unauthorized')
+      } else {
+        next()
+      }
+
+    },
+         },
     ],
   },
   {
@@ -34,6 +99,11 @@ const routes: RouteRecordRaw[] = [
       logoutUser();
       return '/login'
     }
+  },
+  {
+    path: '/unauthorized',
+    name: 'Unauthorized',
+    component: () => import('pages/UnauthorizedPage.vue')
   },
 
   // Always leave this as last one,
