@@ -1,5 +1,5 @@
 <template>
-  <div class="q-pa-md" style="max-width: 500px;margin: 5% auto;background-color: orange;">
+  <div class="q-pa-md" style="max-width: 500px;margin: 10% auto;background-color: orange;">
     <h5>First Automated Login</h5>
     <q-form
       @submit="onSubmit"

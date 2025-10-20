@@ -100,4 +100,9 @@ type AlignType = "left" | "center" | "right";
 #table-div {
   margin-top: 5%;
 }
+@media only screen and (max-width: 400px) {
+  #table-div {
+  margin-top: 15%;
+}
+}
 </style>

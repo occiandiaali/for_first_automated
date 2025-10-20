@@ -18,8 +18,8 @@
     :class="$q.dark.isActive ? 'bg-grey-9' : 'bg-grey-3'"
     >
       <!-- drawer content -->
-               <q-scroll-area style="height: calc(100% - 150px); margin-top: 150px; border-right: 1px solid #ddd">
-          <q-list>
+               <!-- <q-scroll-area style="height: calc(100% - 150px); margin-top: 150px; border-right: 1px solid #ddd"> -->
+          <q-list style="margin-top: 50%;">
 
             <template v-for="(menuItem, index) in filteredMenuList" :key="index">
            
@@ -36,17 +36,18 @@
             </template>
 
           </q-list>
-        </q-scroll-area>
+        <!-- </q-scroll-area> -->
                 <q-img class="absolute-top" src="https://cdn.quasar.dev/img/material.png" style="height: 150px">
           <div class="absolute-bottom bg-transparent">
-            <q-avatar size="56px" class="q-mb-sm">
+            <q-avatar size="56px" class="q-mb-sm cursor-pointer">
               <!-- <img src="https://cdn.quasar.dev/img/boy-avatar.png"> -->
-              <img src="https://ionicframework.com/docs/img/demos/avatar.svg">
+              <img src="https://ionicframework.com/docs/img/demos/avatar.svg" @click="openProfile">
             </q-avatar>
             <div class="text-weight-bold">{{ uname }}</div>
             <div>@{{ role }}</div>
           </div>
         </q-img>
+        <UserProfileComponent :show="showProfile"/>
     </q-drawer>
 
     <q-page-container class="qpContainer">
@@ -60,8 +61,17 @@
 import {computed, ref } from 'vue'
 import { getUserRole, getUserName } from 'src/helpers/auth'
 
+import UserProfileComponent from 'src/components/UserProfileComponent.vue';
+
 const role = ref(getUserRole() || "user");
 const uname = ref(getUserName())
+
+const showProfile = ref(false)
+const openProfile = () => {
+  showProfile.value = !showProfile.value;
+  console.log("Profile: ", showProfile.value)
+
+}
 
 
 const menuList = [
@@ -152,7 +162,27 @@ const toggleRightDrawer = () => {
 <style lang="css">
 .qpContainer {
 width: 100%;
-height: 100vh;
+height: 100%;
 /* background-color: red; */
 }
+/* For WebKit browsers */
+::-webkit-scrollbar {
+    width: 10px; /* Width of the scrollbar */
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: rgb(143, 57, 7); /* Color of the scrollbar thumb */
+    border-radius: 10px; /* Rounded corners */
+}
+
+::-webkit-scrollbar-track {
+    background: rgb(247, 188, 80); /* Color of the track */
+}
+
+/* For Firefox */
+* {
+    scrollbar-width: thin; /* Thin scrollbar */
+    scrollbar-color: rgb(177, 71, 9) rgb(240, 184, 81); /* Thumb color and track color */
+}
+
 </style>

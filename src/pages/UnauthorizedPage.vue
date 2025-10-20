@@ -2,7 +2,7 @@
   <div class="fullscreen bg-blue text-white text-center q-pa-md flex flex-center">
     <div>
       <div style="font-size: 5vh">
-        You don't have the right to see this!
+        You're not allowed to go there!
       </div>
 
       <div class="text-h2" style="opacity:.4">
@@ -15,7 +15,7 @@
         text-color="blue"
         unelevated
         to="/storefront"
-        label="Go Home"
+        label="Go Back"
         no-caps
       />
     </div>

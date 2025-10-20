@@ -173,7 +173,11 @@ const showThisWeekDetails = (customer:string, day:string, due:string, pup:string
 .item-section:hover {
   cursor: pointer;
 }
-
+@media only screen and (max-width: 500px) {
+  #today-div .p-segment {
+  margin-top: 16%;
+}
+}
 
 /* #today-list {
     margin-top: 6%;
