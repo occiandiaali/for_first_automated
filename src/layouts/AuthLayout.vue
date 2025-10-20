@@ -107,9 +107,9 @@ async function onSubmit () {
         submitting.value = true;
       const theUser = {email:email.value, password: password.value}
       const response = await axios.post(url, theUser);
-      console.log("Successful login: ", response.data)
-    //  console.log(`LoggedIn user:${response.data.user.username}-${response.data.user.role}`)
-      console.log("Login message: ", response.data.message)
+     // console.log(response.data)
+
+      console.log(response.data.message)
       localStorage.setItem('jwToken', response.data.jwt)
       storeUserRole(response.data.currentUser.role)
       storeUsername(response.data.currentUser.username)

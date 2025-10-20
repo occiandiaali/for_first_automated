@@ -7,7 +7,7 @@
         </q-card-section>
 
         <q-card-section>
-                 <q-file color="grey-3" outlined v-model="avatar" hint="Set profile pic">
+                 <q-file color="grey-3" outlined v-model="avatar" hint="Change profile pic">
         <template v-slot:append>
           <q-icon name="attachment" color="orange" />
         </template>
@@ -15,7 +15,7 @@
         </q-card-section>
 
         <q-card-section class="q-pt-none">
-          <q-input hint="Set new password" dense v-model="password"  />
+          <q-input hint="Change password" placeholder="Minimum 8 characters" dense v-model="password"  />
         </q-card-section>
 
         <q-card-actions align="right" class="text-primary">

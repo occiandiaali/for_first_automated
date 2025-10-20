@@ -1,19 +1,22 @@
 <template>
     <q-page>
             <div class="search-row">
-          <q-input color="deep-orange" class="search-span" v-model="staff" label="Search">
+          <q-input color="deep-orange" class="search-span" v-model="selectStaff" label="Search">
         <template v-slot:prepend>
           <q-icon name="search" />
         </template>
       </q-input>
-       <q-btn square color="deep-orange" icon="add" id="new-staff" size="xs" @click="prompt = true"/>
+       <q-btn square color="deep-orange" icon="add" id="new-staff" size="xs" @click="addToRow"/>
       </div>
       <br/>
       <div id="table-div">
+        <div v-if="loading">Loading...</div>
+        <div v-if="error">{{ error }}</div>
        <q-table
        title="Staff access"
-      :rows="rows"
+      :rows="staff"
       :columns="columns"
+      
       row-key="id"
       flat
       bordered
@@ -34,7 +37,7 @@
             color="negative"
             dense
             flat
-            @click="deleteRow(props.row.id)"
+            @click="deleteRow(props.row._id)"
           />
         </q-td>
       </template>
@@ -44,14 +47,14 @@
           <q-dialog v-model="prompt" persistent>
       <q-card style="min-width: 350px">
         <q-card-section>
-          <div class="text-h6">Add user</div>
+          <div class="text-h6">{{ addAction ? 'Add' : 'Edit' }} user</div>
         </q-card-section>
 
         <q-card-section class="q-pt-none">
-          <q-input dense v-model="name" hint="username" autofocus @keyup.enter="prompt = false" />
+          <q-input dense v-model="name" hint="username" :placeholder="!addAction ? userInFocus : ''"  autofocus @keyup.enter="prompt = false" />
         </q-card-section>
                 <q-card-section class="q-pt-none">
-          <q-input dense v-model="email" hint="user email" @keyup.enter="prompt = false" />
+          <q-input dense v-model="email" hint="user email" :placeholder="!addAction ? emailInFocus : ''" @keyup.enter="prompt = false" />
         </q-card-section>
         <br/>
                 <q-card-section class="q-pt-none">
@@ -72,17 +75,24 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import {  ref } from 'vue';
 import axios from 'axios';
+import { useUsers } from 'src/composables/useUsers';
+
+const {users, loading, error} = useUsers()
 
 type RowType = [number, string, string, string]
 type AlignType = "left" | "center" | "right";
 
-const staff = ref()
+const selectStaff = ref()
 const name = ref()
 const email = ref()
 const prompt = ref(false)
 const role = ref()
+
+const addAction = ref(true)
+const  userInFocus = ref<string|undefined>(undefined)
+const  emailInFocus = ref<string|undefined>(undefined)
 
 function addNewUser(uname:string,umail:string,urole:string ) {
   const defaultPassword = urole;
@@ -119,24 +129,68 @@ function addNewUser(uname:string,umail:string,urole:string ) {
   }
 }
 
+// const columns = [
+//         { name: 'email', label: 'Email', field: 'email', align: 'left' as AlignType },
+//         { name: 'name', label: 'Name', field: 'name', align: 'left' as AlignType},
+//         { name: 'role', label: 'Role', field: 'role', align: 'left' as AlignType},
+//         { name: 'actions', label: '', field: 'actions', align: 'center' as AlignType}
+//       ]
+
+ const staff = ref(users);      
+// let rows = [
+//         { id: 1, email: 'admin@example.com', name: 'Admin', role: 'Admin' },
+//         { id: 2, email: 'bob@example.com', name: 'Bob', role: 'Editor' },
+//         { id: 3, email: 'carol@example.com', name: 'Carol', role: 'Viewer' }
+//       ]
 const columns = [
         { name: 'email', label: 'Email', field: 'email', align: 'left' as AlignType },
-        { name: 'name', label: 'Name', field: 'name', align: 'left' as AlignType},
+        { name: 'username', label: 'Name', field: 'username', align: 'left' as AlignType},
         { name: 'role', label: 'Role', field: 'role', align: 'left' as AlignType},
         { name: 'actions', label: '', field: 'actions', align: 'center' as AlignType}
       ]
-let rows = [
-        { id: 1, email: 'admin@example.com', name: 'Admin', role: 'Admin' },
-        { id: 2, email: 'bob@example.com', name: 'Bob', role: 'Editor' },
-        { id: 3, email: 'carol@example.com', name: 'Carol', role: 'Viewer' }
-      ]
+
+//const staff = ref([]);      
+
+
+function addToRow() {
+    prompt.value = true;
+  addAction.value = true;
+}
 
 function editRow(row: RowType[]) {
-      console.log('Edit:', row);
+  prompt.value = true;
+  addAction.value = false;
+
+  //console.log('Edit:', row);
+  for (const [key, value] of Object.entries(row)) {
+   
+    if (key === "username") {
+      userInFocus.value = value as unknown as string;
+      
+      
     }
-function deleteRow(id:number) {
-      rows = rows.filter(row => row.id !== id);
+        if (key === "email") {
+      emailInFocus.value = value as unknown as string;
+      
+      
     }
+
+  }
+    }
+// function deleteRow(id:number) {
+//       rows = rows.filter(row => row.id !== id);
+//     }
+function deleteRow(id:string) {
+      staff.value = staff.value.filter(row => row._id !== id);
+    }
+
+ 
+
+// onMounted(() => {
+//   console.log("fetchStaff ", users)
+//   console.error("ifError ", error)
+
+// })
 </script>
 
 <style lang="css" scoped>
