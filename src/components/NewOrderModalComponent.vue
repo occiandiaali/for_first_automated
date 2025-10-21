@@ -20,7 +20,7 @@
         filled
         v-model="name"
         label="Customer *"
-        hint="Name and/or Surname"
+        hint="name and/or surname"
         lazy-rules
         :rules="[ val => val && val.length > 0 || 'Please type something']"
         style="width: 100%;"
@@ -29,12 +29,12 @@
       <q-input
         filled
         type="tel"
-        v-model="age"
+        v-model="phone"
         label="Phone number *"
         lazy-rules
         :rules="[
-          val => val !== null && val !== '' || 'Please type your age',
-          val => val > 0 && val < 100 || 'Please type a real age'
+          val => val !== null && val !== '' || 'Please type customer phone no.',
+          val => val > 0 && val < 11 || 'Please type a real phone no.'
         ]"
         style="width: 100%;"
       />
@@ -43,13 +43,14 @@
       <q-input
         filled
         type="number"
-        v-model="age"
+        v-model="comment"
         label="Comment"
         style="width: 100%;"
       />
       <div id="items-select-div">
 
           <q-btn outline style="color: goldenrod;" label="Clothing Items" @click="selectItems = true" />
+
        
             <q-dialog v-model="selectItems">
       <q-card>
@@ -61,15 +62,19 @@
 
         <q-card-section style="max-height: 50vh" class="scroll">
             <q-list separator>
-                <q-item v-for="item in options" :key="item.id">
-
+              <q-item v-if="loading"><q-item-label caption>Loading..</q-item-label></q-item>
+              <q-item v-if="error"><q-item-label caption>{{ error }}</q-item-label></q-item>
+                <q-item v-for="item in options" :key="item._id">
                      <q-item-section >
-                      <q-checkbox v-model="item.checked"/>
+                      <q-checkbox v-model="item.checked"
+                      color="deep-orange"
+                     @update:model-value="() => logCheckedItem(item._id, item.checked, item.itemName, item.itemPrice, item.qty)"
+                      />
                       </q-item-section>
                       <q-item-section style="font-size: small;">
-                        <!-- <q-item-label caption v-if="item.checked">{{ item.qty }}</q-item-label> -->
-                      <q-item-label>{{ item.name }}</q-item-label>
-                      <q-item-label caption >NGN{{ item.price*item.qty }}</q-item-label>
+
+                      <q-item-label>{{ item.itemName }}</q-item-label>
+                      <q-item-label caption >NGN{{ item.itemPrice*item.qty }}</q-item-label>
 
                       </q-item-section>
                        <q-item-section >
@@ -102,17 +107,17 @@
       <q-input
         filled
         type="date"
-        v-model="age"
-        label="Due"
+        v-model="dueDate"
+        label="Due date *"
         style="width: 100%;"
       />
       <q-select 
-      label="Pickup@"
+      label="Pickup@ *"
             transition-show="scale"
         transition-hide="scale"
-        v-model="name"
+        v-model="pickup"
         filled
-        :options="pickup"
+        :options="pickupOptions"
         style="width: 100%;"
       />
 
@@ -141,30 +146,70 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue';
-import { fabricsArray } from 'src/dummy-data';
 
-const options = ref(fabricsArray)
+import { useItems } from 'src/composables/useItems';
+
+
+interface Item {
+  _id: string
+  checked: boolean
+  itemName:string
+  itemPrice: number
+  qty: number
+}
+
+
+
+const {items, loading, error} = useItems()
+
+const options = ref(items);//ref(fabricsArray)
+
+const logCheckedArr = ref<Item[]>([]) // Track booked checked-in items
+
+function logCheckedItem(id:string,isCheck:boolean,label:string, p:number, q:number) {
+  const item = {
+    _id:id,
+    itemName:label,
+    itemPrice:p,
+    qty: q,
+    checked:isCheck
+  }
+  if (isCheck) {
+    logCheckedArr.value.push(item)
+    console.log("Checked ", logCheckedArr.value)
+  } else if (!isCheck){
+    const idx = logCheckedArr.value.findIndex(o => o._id === id)
+    if (idx !== -1) {
+      logCheckedArr.value.splice(idx, 1)
+    }
+    console.log("Checked ", logCheckedArr.value)
+  }
+}
+
 
 const props = defineProps({
     modalValue: Boolean,
   //  data: String,
-    items: [String, Number]
+  //  items: [String, Number]
 })
+
 const name = ref()
-//const accept = ref()
-// const itemQty = ref(1)
-// const right = ref()
+const phone = ref()
+const comment = ref()
+const dueDate = ref()
+
 const selectItems = ref(false) // open select garments list modal
-//const selectedItems = ref([]) // The items booked
-const age = ref()
-//const model = ref()
-const pickup = ref(["Home delivery", "Store"])
+
+
+const pickup = ref()
+const pickupOptions = ref(["Home", "Store"])
 
 const visible = ref(props.modalValue)
 //const modalData = ref(props.data)
 //const optionsData = ref(props.items)
 watch(() => props.modalValue, val => visible.value = val)
 //watch(() => props.data, val => modalData.value = val)
+
 </script>
 
 <style lang="css" scoped>

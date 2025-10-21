@@ -6,23 +6,27 @@
           <q-icon name="search" />
         </template>
       </q-input>
-       <q-btn square color="deep-orange" icon="add" id="new-item"/>
+       <q-btn square color="deep-orange" icon="add" id="new-item" @click="showDialog = true"/>
       </div>
       <br>
-      <div id="table-div">
+      <div id="table-div" class="q-pa-md">
+                <div v-if="loading" style="margin: 0 auto;">Loading...</div>
+        <div v-if="error" style="margin: 0 auto;">{{ error }}</div>
     <q-table
      title="Price list"
-      :rows="fabricsArray"
+      :rows="fabricItems"
       :columns="columns"
-      row-key="id"
+      row-key="_id"
       flat
       bordered
     
     >
+    
       <template v-slot:body-cell="props">
         <q-td :props="props" >
       
             {{ props.row[props.col.name] }}
+              
             <q-popup-edit
               v-model="props.row[props.col.name]"
               title="Edit"
@@ -42,12 +46,41 @@
       </template>
     </q-table>
     </div>
+    <!--Add New Item Dialog-->
+       <div class="q-pa-md q-gutter-sm">
+          <q-dialog v-model="showDialog" persistent>
+      <q-card style="min-width: 350px">
+        <q-card-section>
+          <div class="text-h6">Add item</div>
+        </q-card-section>
+
+        <q-card-section class="q-pt-none">
+          <q-input dense v-model="itemName" hint="item name" placeholder="E.g. Shirt, Native, Curtain.."   />
+        </q-card-section>
+                <q-card-section class="q-pt-none">
+          <q-input type="number" dense v-model="itemPrice" hint="price" placeholder="E.g. 600" />
+        </q-card-section>
+        <br/>
+     
+
+        <q-card-actions align="right" class="text-primary">
+          <q-btn flat label="Cancel" v-close-popup />
+          <q-btn flat label="Save" v-close-popup @click="addNewItem(itemName, itemPrice)" />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+    </div>
+    <!---->
   </q-page>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import { fabricsArray } from 'src/dummy-data';
+//import { fabricsArray } from 'src/dummy-data';
+import { useItems } from 'src/composables/useItems';
+import axios from 'axios';
+
+const {items, loading, error} = useItems()
 
 const item = ref() // For search box
 type RowType = [number, string, string]
@@ -56,9 +89,10 @@ type AlignType = "left" | "center" | "right";
     //     { name: 'garment', label: 'Garment', field: 'garment', align: 'left' as AlignType },
     //     { name: 'cost', label: 'Cost', field: 'cost', align: 'right' as AlignType }
     //   ];
+    const fabricItems = ref(items)
         const  columns = [
-        { name: 'name', label: 'Garment', field: 'name', align: 'left' as AlignType },
-        { name: 'price', label: 'Price', field: 'price', align: 'right' as AlignType }
+        { name: 'itemName', label: 'Garment', field: 'name', align: 'left' as AlignType },
+        { name: 'itemPrice', label: 'Price', field: 'price', align: 'right' as AlignType }
       ];
     // const  rows = [
     //     { id: 1, garment: 'T-Shirt', cost: '15' },
@@ -68,7 +102,31 @@ type AlignType = "left" | "center" | "right";
 
     function onSave(row: RowType[]) {
       console.log('Saved row:', row);
-    }  
+    }
+
+    const showDialog = ref(false)
+    const itemName = ref()
+const itemPrice = ref()
+    
+    function addNewItem(name:string, price:number) {
+      try {
+        const newItem = {
+          itemName: name,
+          qty: 1,
+          itemPrice: price,
+          checked: false
+        }
+        axios.post('http://localhost:3000/api/admin/items', newItem)
+        .then(response => {
+          console.log('New item saved: ', response.data);
+          showDialog.value = false;
+          itemName.value = null;
+          itemPrice.value = null;
+        }).catch(e => console.error(e))
+      } catch (error) {
+        console.error(error)
+      }
+    }
 
 </script>
 
