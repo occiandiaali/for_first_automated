@@ -34,7 +34,7 @@
         lazy-rules
         :rules="[
           val => val !== null && val !== '' || 'Please type customer phone no.',
-          val => val > 0 && val < 11 || 'Please type a real phone no.'
+         // val => val > 0 && val < 10 || 'Please type a real phone no.'
         ]"
         style="width: 100%;"
       />
@@ -42,7 +42,7 @@
       
       <q-input
         filled
-        type="number"
+        
         v-model="comment"
         label="Comment"
         style="width: 100%;"
@@ -97,9 +97,13 @@
 
         <q-separator />
 
+        <q-card-section>
+          <q-item-label caption><strong>Amount</strong> ₦{{ t }}</q-item-label>
+        </q-card-section>
+
         <q-card-actions align="right">
           <q-btn flat label="Cancel" color="primary" v-close-popup />
-          <q-btn flat label="Accept" color="primary" v-close-popup />
+          <q-btn flat label="Accept" @click="processCheckedItems" color="primary" v-close-popup />
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -124,9 +128,9 @@
       <!-- <q-toggle v-model="accept" label="I accept the license and terms" /> -->
 
       <div>
-        <q-item-label class="q-ml-sm q-mb-md"><strong>Total</strong> $0</q-item-label>
-        <q-btn label="Submit" type="submit" class="glossy" rounded color="deep-orange"/>
-        <q-btn label="Reset" type="reset" color="teal" flat class="q-ml-sm" />
+        <q-item-label class="q-ml-sm q-mb-md"><strong>Total</strong> ₦{{ t }}</q-item-label>
+        <q-btn label="Submit" type="submit" @click="fakeSubmit" class="glossy" rounded color="deep-orange" v-close-popup/>
+        <q-btn label="Reset" type="reset" @click="reset" color="teal" flat class="q-ml-sm" />
       </div>
     </q-form>
 
@@ -145,7 +149,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 
 import { useItems } from 'src/composables/useItems';
 
@@ -164,6 +168,9 @@ const {items, loading, error} = useItems()
 
 const options = ref(items);//ref(fabricsArray)
 
+//const thisBooking = ref()
+
+
 const logCheckedArr = ref<Item[]>([]) // Track booked checked-in items
 
 function logCheckedItem(id:string,isCheck:boolean,label:string, p:number, q:number) {
@@ -177,6 +184,7 @@ function logCheckedItem(id:string,isCheck:boolean,label:string, p:number, q:numb
   if (isCheck) {
     logCheckedArr.value.push(item)
     console.log("Checked ", logCheckedArr.value)
+
   } else if (!isCheck){
     const idx = logCheckedArr.value.findIndex(o => o._id === id)
     if (idx !== -1) {
@@ -198,6 +206,8 @@ const phone = ref()
 const comment = ref()
 const dueDate = ref()
 
+//const orderTotal = ref(0)
+
 const selectItems = ref(false) // open select garments list modal
 
 
@@ -209,6 +219,55 @@ const visible = ref(props.modalValue)
 //const optionsData = ref(props.items)
 watch(() => props.modalValue, val => visible.value = val)
 //watch(() => props.data, val => modalData.value = val)
+
+// Lines 224 - 238 handle the nested modal for items checked-in
+const t = computed(() => {
+  return logCheckedArr.value.reduce((sum, item) => sum + item.itemPrice*item.qty, 0)
+})
+const checkedItems = ref()
+const processCheckedItems = () => {
+  checkedItems.value = logCheckedArr.value.map(order => {
+  return {
+  
+    name: order.itemName,
+  price: order.itemPrice,
+  amt: order.qty,
+  subTotal: (order.itemPrice * order.qty),
+}
+})
+}
+
+const fakeSubmit = () => {
+  const readyDate = new Date(dueDate.value);
+  const dropDate = new Date().toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+ // let t = 0;
+
+const formattedDate = readyDate.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+
+  const order = {
+    customer: name.value,
+    phone: phone.value,
+    comment: comment.value,
+    garments: checkedItems.value,
+    dropOff: dropDate,
+    due: formattedDate,
+    totalDue: t.value,
+    pickupPoint: pickup.value
+  }
+  console.log("<<<<<<New Order>>>>>>>");
+  console.log(order);
+   console.log("<<<<<<New Order>>>>>>>");
+reset()
+}
+
+const reset = () => {
+    name.value = null;
+  phone.value = null;
+  comment.value = null;
+  logCheckedArr.value = [];
+  dueDate.value = null;
+  pickup.value = null;
+}
 
 </script>
 

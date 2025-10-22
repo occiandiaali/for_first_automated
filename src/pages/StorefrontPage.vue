@@ -11,7 +11,7 @@
       <NewOrderModalComponent v-model="newOrderModalOpen" :data="modalContent"/>
       <br>
       <div id="today-div">
-          <p class="p-segment"><strong>Today</strong> Fri, Oct 17</p>
+          <p class="p-segment"><strong>Today</strong> {{ todayDate }}</p>
           <q-list id="today-list">
                               <q-item class="item-card" v-for="t in todays" :key="t.name">
         <q-item-section class="item-section" @click="showItemDetails(t.name, t.due, t.pickup)">
@@ -33,7 +33,7 @@
         </q-list>
     </div>
       <div>
-        <p class="p-segment"><strong>This week</strong> Sat, Oct 18 - Sun, Oct 24</p>
+        <p class="p-segment"><strong>This week</strong> {{ todayDate }} - {{ endWeek }}</p>
                 <q-list id="week-list">
                   <q-item class="item-card" v-for="v in thisWeek" :key="v.name">
         <q-item-section class="item-section" @click="showThisWeekDetails(v.name, v.day, v.due, v.pickup)">
@@ -108,11 +108,17 @@ const todays = [
   {name: "Delilah", due: '1:00 PM', pickup: "Home delivery"},
   {name: "Alhaji", due: '11:50 AM', pickup: "Store"},
 ]
+// Heading for the Today section
+  const todayDate = ref(new Date().toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }));
 const thisWeek = [
     {name: "Madame Anna", day: 'Sat 18', due: '4:35 PM', pickup: "Store"},
   {name: "Oga Joe", day: 'Sat 18', due: '11:00 AM', pickup: "Home delivery"},
   {name: "Tompolo", day: 'Mon 20', due: '2:50 PM', pickup: "Store"},
 ]
+// Heading for the Week ahead section
+const date = new Date();
+date.setDate(date.getDate() + 6)
+const endWeek = ref(date.toDateString().slice(0,10))
 
 const text = ref()
 //console.log(text)
