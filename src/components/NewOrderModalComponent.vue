@@ -150,7 +150,7 @@
 
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
-
+import axios from 'axios';
 import { useItems } from 'src/composables/useItems';
 
 
@@ -237,7 +237,7 @@ const processCheckedItems = () => {
 })
 }
 
-const fakeSubmit = () => {
+const fakeSubmit = async () => {
   const readyDate = new Date(dueDate.value);
   const dropDate = new Date().toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
  // let t = 0;
@@ -245,6 +245,7 @@ const fakeSubmit = () => {
 const formattedDate = readyDate.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
 
   const order = {
+    orderNo: Math.random().toString(36).slice(2), // {TODO: Test this!!}
     customer: name.value,
     phone: phone.value,
     comment: comment.value,
@@ -257,6 +258,12 @@ const formattedDate = readyDate.toLocaleDateString('en-US', { weekday: 'short', 
   console.log("<<<<<<New Order>>>>>>>");
   console.log(order);
    console.log("<<<<<<New Order>>>>>>>");
+   try {
+    const response = await axios.post('http://localhost:3000/api/user/storefront', order);
+    console.log("New Order booked: ", response.data)
+   } catch (error) {
+    console.error("Error booking Order: ", error)
+   }
 reset()
 }
 
