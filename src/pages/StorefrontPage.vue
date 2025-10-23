@@ -1,7 +1,7 @@
 <template>
    <q-page>
     <div class="search-row">
-          <q-input color="deep-orange" class="search-span" v-model="text" label="Search">
+          <q-input color="deep-orange" class="search-span" v-model="searchOrdersText" label="Search">
         <template v-slot:prepend>
           <q-icon name="search" />
         </template>
@@ -12,16 +12,16 @@
       <br>
       <div id="today-div">
           <p class="p-segment"><strong>Today</strong> {{ todayDate }}</p>
-          <q-list id="today-list">
-                              <q-item class="item-card" v-for="t in todays" :key="t.name">
-        <q-item-section class="item-section" @click="showItemDetails(t.name, t.due, t.pickup)">
-          <q-item-label><strong>{{ t.due }}</strong></q-item-label>
-          <q-item-label>{{ t.name }}</q-item-label>
-          <q-item-label caption>Secondary line text. Lorem ipsum dolor sit amet, consectetur adipiscit elit.</q-item-label>
+          <q-list id="today-list" v-if="row1.length > 0">
+        <q-item class="item-card" v-for="r1 in row1" :key="r1._id">
+        <q-item-section class="item-section" @click="showOrderDetails(r1.orderNo, r1.comment, r1.phone, r1.customer,r1.dropOff,r1.due,r1.garments,r1.pickupPoint,r1.totalDue)">
+          <q-item-label><strong>{{ r1.customer }}</strong></q-item-label>
+          <q-item-label>{{ r1.totalDue }}</q-item-label>
+          <q-item-label caption>{{ r1.due }}</q-item-label>
         </q-item-section>
 
         <q-item-section side top>
-          <q-item-label caption>{{ t.pickup }}</q-item-label>
+          <q-item-label caption>{{ r1.pickupPoint }}</q-item-label>
           <div class="text-orange">
             <q-icon name="star" />
             <q-icon name="star" />
@@ -31,20 +31,26 @@
       </q-item>
     
         </q-list>
+        <div class="q-pa-md" v-else>
+          <q-item-section>
+            <q-item-label>No order due for today...</q-item-label>
+          </q-item-section>
+        </div>
     </div>
       <div>
-        <p class="p-segment"><strong>This week</strong> {{ todayDate }} - {{ endWeek }}</p>
-                <q-list id="week-list">
-                  <q-item class="item-card" v-for="v in thisWeek" :key="v.name">
-        <q-item-section class="item-section" @click="showThisWeekDetails(v.name, v.day, v.due, v.pickup)">
-          <q-item-label><strong>{{ v.day }}</strong></q-item-label>
-          <q-item-label caption>{{ v.due }}</q-item-label>
-          <q-item-label>{{ v.name }}</q-item-label>
-          <q-item-label caption>Secondary line text. Lorem ipsum dolor sit amet, consectetur adipiscit elit.</q-item-label>
+        <p class="p-segment"><strong>The week of </strong> {{ weekStart }} - {{ weekEnd }}</p>
+                <q-list id="week-list" v-if="row2.length > 0">
+                  <q-item class="item-card" v-for="r2 in row2" :key="r2._id">
+        <q-item-section class="item-section" @click="showOrderDetails(r2.orderNo, r2.comment, r2.phone, r2.customer,r2.dropOff,r2.due,r2.garments,r2.pickupPoint,r2.totalDue)">
+          <q-item-label><strong>{{ r2.customer }}</strong></q-item-label>
+          <!-- <q-item-label>To pay: ₦{{ r2.totalDue }}</q-item-label> -->
+           <q-item-label caption>Submitted: {{ r2.dropOff }}</q-item-label>
+          <q-item-label caption>Due: {{ r2.due }}</q-item-label>
+          
         </q-item-section>
 
         <q-item-section side top>
-          <q-item-label caption>{{ v.pickup }}</q-item-label>
+          <q-item-label caption>{{ r2.pickupPoint }}</q-item-label>
           <div class="text-orange">
             <q-icon name="star" />
             <q-icon name="star" />
@@ -54,9 +60,14 @@
       </q-item>
 
         </q-list>
+               <div v-else>
+          <q-item-section>
+            <q-item-label>No order due for the week!</q-item-label>
+          </q-item-section>
+        </div>
       </div>
       <div>
-        <p class="p-segment"><strong>Upcoming</strong> After this week</p>
+        <p class="p-segment"><strong>Upcoming</strong></p>
                 <q-list>
                   <q-item class="item-card">
         <q-item-section>
@@ -93,60 +104,142 @@
         </q-item-section>
       </q-item>
         </q-list>
-        <StoreItemSectionComponent v-model="itemDetailsModalOpen" :pickup="pickupPoint" :customer="customerName" :due="bookingDue"  />
+
+         <StoreItemSectionComponent 
+         v-model="itemDetailsModalOpen"
+        :customer="customerName"
+        :phone="customerPhone"
+        :comment="orderComment"
+        :orderNo="orderNumber"
+        :dropOff="droppedDate"
+        :dueDate="dueByDate"
+        :garments="orderBasket"
+        :pickup="pickupLocation"
+        :totalPay="totalPayment"
+         />
       </div>
    </q-page>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
+import axios from 'axios';
 import NewOrderModalComponent from 'src/components/NewOrderModalComponent.vue';
 import StoreItemSectionComponent from 'src/components/StoreItemSectionComponent.vue';
+import checkDateStatus  from 'src/helpers/checkDateStatus';
+import { type Garment } from 'src/components/StoreItemSectionComponent.vue'; // Interface for order items
 
-const todays = [
-  {name: "Mr. Iyke", due: '8:05 AM', pickup: "Store"},
-  {name: "Delilah", due: '1:00 PM', pickup: "Home delivery"},
-  {name: "Alhaji", due: '11:50 AM', pickup: "Store"},
-]
+interface OrderItem {
+  _id: string;
+  orderNo: string;
+  comment: string;
+  phone: string;
+customer: string;
+dropOff: string;
+due: string;
+garments: Garment[],
+pickupPoint: string;
+totalDue: number
+}
+
+const api = 'http://localhost:3000/api/user/storefront'
+
+const row1 = ref<OrderItem[]>([]);
+
+const row2 = ref<OrderItem[]>([]);
+
+const weekStart = ref();
+const weekEnd = ref()
+
 // Heading for the Today section
   const todayDate = ref(new Date().toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }));
-const thisWeek = [
-    {name: "Madame Anna", day: 'Sat 18', due: '4:35 PM', pickup: "Store"},
-  {name: "Oga Joe", day: 'Sat 18', due: '11:00 AM', pickup: "Home delivery"},
-  {name: "Tompolo", day: 'Mon 20', due: '2:50 PM', pickup: "Store"},
-]
-// Heading for the Week ahead section
-const date = new Date();
-date.setDate(date.getDate() + 6)
-const endWeek = ref(date.toDateString().slice(0,10))
 
-const text = ref()
-//console.log(text)
-//const heavyList = ref([])
+const searchOrdersText = ref(); // v-model for search input
+/**
+ * 
+comment: "Good customer"
+customer: "Alhaja"
+dropOff: "Wed, Oct 22"
+due: "Sat, Oct 25"
+garments: (3) [{…}, {…}, {…}]
+orderNo: "gy32ymh0gso"
+phone: "0000000"
+pickupPoint: "Home"
+totalDue: 11140
+ */
 const newOrderModalOpen = ref(false)
 const itemDetailsModalOpen = ref(false)
 const modalContent = ref("")
+const orderNumber = ref()
+const orderComment = ref()
 const customerName = ref()
-const bookingDue = ref()
-const dueDay = ref()
-const pickupPoint = ref()
+const customerPhone = ref()
+const droppedDate = ref()
+const dueByDate = ref()
+const orderBasket = ref()
+const pickupLocation = ref()
+const totalPayment = ref()
+
 const showNewOrderForm = (content:string) => {
   newOrderModalOpen.value = true
   modalContent.value = content
 }
-const showItemDetails = (customer:string, due:string, pup:string) => {
+
+const showOrderDetails = (orderNo: string, comment: string, phone:string, customer:string,  submitDate:string, collectDate:string, clothesArr: Garment[], pup:string, orderTotal: number) => {
   itemDetailsModalOpen.value = true
-  customerName.value = customer
-  bookingDue.value = due
-  pickupPoint.value = pup
+  orderNumber.value = orderNo;
+  orderComment.value = comment;
+  customerName.value = customer;
+  customerPhone.value = phone;
+  droppedDate.value = submitDate;
+  dueByDate.value = collectDate;
+  orderBasket.value = clothesArr;
+  pickupLocation.value = pup;
+  totalPayment.value = orderTotal;
 }
-const showThisWeekDetails = (customer:string, day:string, due:string, pup:string) => {
-  itemDetailsModalOpen.value = true
-  customerName.value = customer
-  bookingDue.value = due
-  dueDay.value = day
-  pickupPoint.value = pup
+
+const fetchTodayOrders = async () => {
+  try {
+    const response = await axios.get(api);
+  //  console.log("Orders: ", response.data)
+        const resArr = Object.keys(response.data).map(key => {
+      return response.data[key]
+    });
+    resArr.forEach(x => {
+     // console.log(x.due);
+            const outcome = checkDateStatus(x.due);
+            /**
+             * {
+                isToday: false,
+                isInCurrentWeek: true,
+                weekRange: {
+                  start: "Sun, Oct 19",
+                  end: "Sat, Oct 25"
+                }
+              }
+             */
+      if (outcome.isToday) {
+        row1.value.push(x)
+      } else if (outcome.isInCurrentWeek) {
+        row2.value.push(x)
+
+        weekStart.value = outcome.weekRange.start
+        weekEnd.value = outcome.weekRange.end
+      }
+      
+      // console.log("Todays: ", row1.value)
+      // console.log("Weeks: ", row2.value)
+      // console.log(`Range: ${weekStart.value} - ${weekEnd.value}`)
+    }); // resArr forEach
+
+  } catch (error) {
+    console.error("Error fetching orders:", error);
+  }
 }
+
+onMounted(() => {
+  fetchTodayOrders().then(() => console.log("Mounted fetchTodayOrders..")).catch(e => console.error(e))
+})
 </script>
 
 <style lang="css" scoped>
