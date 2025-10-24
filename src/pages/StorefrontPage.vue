@@ -14,14 +14,15 @@
           <p class="p-segment"><strong>Today</strong> {{ todayDate }}</p>
           <q-list id="today-list" v-if="row1.length > 0">
         <q-item class="item-card" v-for="r1 in row1" :key="r1._id">
-        <q-item-section class="item-section" @click="showOrderDetails(r1.orderNo, r1.comment, r1.phone, r1.customer,r1.dropOff,r1.due,r1.garments,r1.pickupPoint,r1.totalDue)">
+        <q-item-section class="item-section" @click="showOrderDetails(r1._id, r1.orderNo, r1.comment, r1.phone, r1.customer,r1.dropOff,r1.due,r1.garments,r1.pickupPoint,r1.totalDue)">
           <q-item-label><strong>{{ r1.customer }}</strong></q-item-label>
-          <q-item-label>{{ r1.totalDue }}</q-item-label>
+          <q-item-label caption>{{ r1.comment }}</q-item-label>
+          <q-item-label>{{ r1.garments.length }} {{ r1.garments.length > 1 ? 'items' : 'item' }}</q-item-label>
           <q-item-label caption>{{ r1.due }}</q-item-label>
         </q-item-section>
 
         <q-item-section side top>
-          <q-item-label caption>{{ r1.pickupPoint }}</q-item-label>
+          <q-item-label caption>Pick-up @ {{ r1.pickupPoint }}</q-item-label>
           <div class="text-orange">
             <q-icon name="star" />
             <q-icon name="star" />
@@ -41,7 +42,7 @@
         <p class="p-segment"><strong>The week of </strong> {{ weekStart }} - {{ weekEnd }}</p>
                 <q-list id="week-list" v-if="row2.length > 0">
                   <q-item class="item-card" v-for="r2 in row2" :key="r2._id">
-        <q-item-section class="item-section" @click="showOrderDetails(r2.orderNo, r2.comment, r2.phone, r2.customer,r2.dropOff,r2.due,r2.garments,r2.pickupPoint,r2.totalDue)">
+        <q-item-section class="item-section" @click="showOrderDetails(r2._id, r2.orderNo, r2.comment, r2.phone, r2.customer,r2.dropOff,r2.due,r2.garments,r2.pickupPoint,r2.totalDue)">
           <q-item-label><strong>{{ r2.customer }}</strong></q-item-label>
           <!-- <q-item-label>To pay: ₦{{ r2.totalDue }}</q-item-label> -->
            <q-item-label caption>Submitted: {{ r2.dropOff }}</q-item-label>
@@ -107,6 +108,7 @@
 
          <StoreItemSectionComponent 
          v-model="itemDetailsModalOpen"
+         :documentID="documentId"
         :customer="customerName"
         :phone="customerPhone"
         :comment="orderComment"
@@ -170,6 +172,7 @@ totalDue: 11140
 const newOrderModalOpen = ref(false)
 const itemDetailsModalOpen = ref(false)
 const modalContent = ref("")
+const documentId = ref()
 const orderNumber = ref()
 const orderComment = ref()
 const customerName = ref()
@@ -185,8 +188,9 @@ const showNewOrderForm = (content:string) => {
   modalContent.value = content
 }
 
-const showOrderDetails = (orderNo: string, comment: string, phone:string, customer:string,  submitDate:string, collectDate:string, clothesArr: Garment[], pup:string, orderTotal: number) => {
+const showOrderDetails = (docId: string, orderNo: string, comment: string, phone:string, customer:string,  submitDate:string, collectDate:string, clothesArr: Garment[], pup:string, orderTotal: number) => {
   itemDetailsModalOpen.value = true
+  documentId.value = docId;
   orderNumber.value = orderNo;
   orderComment.value = comment;
   customerName.value = customer;

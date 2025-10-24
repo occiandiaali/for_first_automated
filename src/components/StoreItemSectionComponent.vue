@@ -1,21 +1,21 @@
 <template v-slot:body="props">
             <q-dialog v-model="visible">
       <q-card>
-        <q-card-section>
-          <q-item-label caption>Order no. {{ orderNo }}</q-item-label>
-        </q-card-section>
-        <q-separator/>
-        <q-card-section>
+        <!-- <q-card-section>
           
+        </q-card-section>
+        <q-separator/> -->
+        <q-card-section>
+          <q-item-label caption>Order ID {{ orderNo }}</q-item-label>
           <div class="text-h4">{{ customer }}</div>
           <q-item-label caption>Phone: {{ phone }}</q-item-label>
         </q-card-section>
 
         <q-separator />
         <q-card-section>
-            <div class="q-pa-sm" style="max-width: 450px">
-                <p>Checked-in: {{ dropOff }}</p>
-                <p>Date due: {{ dueDate }}</p>
+            <div class="q-pa-sm" style="max-width: 450px;display: flex;flex-direction: row;justify-content: space-between;">
+                <p>Check-in {{ dropOff }}</p>
+                <p><strong>Due</strong> {{ dueDate }}</p>
             </div>
         </q-card-section>
 
@@ -46,15 +46,31 @@
 
         <q-separator/>
                 <q-card-section>
-            <div class="q-pa-sm" style="max-width: 450px">
-                <p>Pickup@: {{ pickup }}</p>
-                <p>Total: ₦<strong>{{ totalPay }}</strong></p>
+            <div class="q-pa-sm" style="max-width: 450px;display: flex;flex-direction: row;justify-content: space-between;">
+              <p>Total ₦<strong>{{ totalPay }}</strong></p>
+                <p>Pickup@ {{ pickup }}</p>
             </div>
         </q-card-section>
 
         <q-separator />
+        <!--ConfirmComplete dialog-->
+            <q-dialog v-model="confirmComplete" persistent>
+      <q-card>
+        <q-card-section class="row items-center">
+          <q-avatar icon="warning" color="deep-orange" text-color="white" />
+          <span class="q-ml-sm">You are about to complete this order. Proceed?</span>
+        </q-card-section>
 
         <q-card-actions align="right">
+          <q-btn flat label="Cancel" color="primary" v-close-popup />
+          <q-btn flat label="Complete order" color="primary" @click="handleComplete(documentID)" v-close-popup />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+        <!---->
+
+        <q-card-actions align="right">
+          <q-btn style="background: goldenrod;" label="Complete" @click="confirmComplete = true" />
           <q-btn label="Close" color="brown-8" v-close-popup />
           <!-- <q-btn flat label="Book" color="success" v-close-popup /> -->
         </q-card-actions>
@@ -65,6 +81,7 @@
 
 <script setup lang="ts">
 import { type PropType, ref, watch } from 'vue';
+import axios from 'axios';
 
 export interface Garment {
   name: string;
@@ -73,6 +90,8 @@ export interface Garment {
   subTotal: number;
   _id: string;
 }
+
+const confirmComplete = ref(false)
 
 /**
  * 
@@ -88,6 +107,7 @@ totalDue: 11140
  */
 const props = defineProps({
     modalValue: Boolean,
+    documentID: String,
     orderNo: String,
     comment: String,
     customer: String,
@@ -102,6 +122,7 @@ const props = defineProps({
 
 const visible = ref(props.modalValue)
 
+const docID = ref(props.documentID)
 const orderNo = ref(props.orderNo)
 const comment = ref(props.comment)
 const phone = ref(props.phone)
@@ -113,6 +134,7 @@ const pickup = ref(props.pickup)
 const total = ref(props.totalPay)
 
 watch(() => props.modalValue, val => visible.value = val)
+watch(() => props.documentID, val => docID.value = val)
 watch(() => props.orderNo, val => orderNo.value = val)
 watch(() => props.comment, val => comment.value = val)
 watch(() => props.phone, val => phone.value = val)
@@ -122,4 +144,50 @@ watch(() => props.dueDate, val => dueDate.value = val)
 watch(() => props.garments, val => garments.value = val)
 watch(() => props.pickup, val => pickup.value = val)
 watch(() => props.totalPay, val => total.value = val)
+
+// Refs to control if item deletion proceeds
+const proceedToDel = ref(false)
+
+async function postToArchive(id:string|undefined) {
+ // alert("Sending document to Archive...")
+ try {
+  await axios.post('http://localhost:3000/api/user/archive', { itemId: id })
+  .then(response => {
+    if (response.status === 200 || response.status === 201) {
+      proceedToDel.value = true;
+      console.log('Item archived:', response.data);
+    }
+  })
+  .catch(error => {
+    console.error('AxiosPost Error archiving item:', error);
+  });
+
+ } catch (error) {
+    console.error('TryCatch Error archiving item:', error);
+ }
+}
+async function deleteFromOrders(str: string|undefined) {
+ // alert(`Deleting order ${str}...`)
+ try {
+  const response = await axios.delete(`http://localhost:3000/api/user/storefront/${str}`);
+  alert(`${response.data}`)
+ } catch (error) {
+  console.error("Error deleting Order: ", error)
+ }
+}
+
+function handleComplete(orderId: string|undefined) {
+  postToArchive(orderId).then(() => {
+    if(proceedToDel.value) {
+      deleteFromOrders(orderId).then(() => {
+       location.reload()
+      }).catch(e => console.error(e))
+    } else {
+      alert("Couldn't complete. Please, try again.")
+    }
+  }).catch(e => console.error(e))
+}
+
+
+
 </script>
