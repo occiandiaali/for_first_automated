@@ -19,7 +19,7 @@ export function useItems() {
   const fetchItems = async () => {
     loading.value = true;
     try {
-      const response = await axios.get<Item[]>('http://localhost:3000/api/admin/items');
+      const response = await axios.get<Item[]>('http://localhost:3000/api/user/items', {withCredentials:true});
       items.value = response.data;
     } catch (err) {
       error.value = 'Failed to fetch items';

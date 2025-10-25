@@ -151,7 +151,7 @@ const proceedToDel = ref(false)
 async function postToArchive(id:string|undefined) {
  // alert("Sending document to Archive...")
  try {
-  await axios.post('http://localhost:3000/api/user/archive', { itemId: id })
+  await axios.post('http://localhost:3000/api/user/archive', { itemId: id }, {withCredentials:true})
   .then(response => {
     if (response.status === 200 || response.status === 201) {
       proceedToDel.value = true;
@@ -169,7 +169,7 @@ async function postToArchive(id:string|undefined) {
 async function deleteFromOrders(str: string|undefined) {
  // alert(`Deleting order ${str}...`)
  try {
-  const response = await axios.delete(`http://localhost:3000/api/user/storefront/${str}`);
+  const response = await axios.delete(`http://localhost:3000/api/user/storefront/${str}`, {withCredentials:true});
   alert(`${response.data}`)
  } catch (error) {
   console.error("Error deleting Order: ", error)

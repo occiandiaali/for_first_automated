@@ -17,7 +17,7 @@ export function useUsers() {
   const fetchUsers = async () => {
     loading.value = true;
     try {
-      const response = await axios.get<User[]>('http://localhost:3000/api/admin/staff');
+      const response = await axios.get<User[]>('http://localhost:3000/api/admin/staff', {withCredentials:true});
       users.value = response.data;
     } catch (err) {
       error.value = 'Failed to fetch users';

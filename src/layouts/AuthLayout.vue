@@ -74,8 +74,7 @@ import axios from 'axios'
 import { storeUsername, storeUserRole } from 'src/helpers/auth'
 
 //const $q = useQuasar()
-const url = 'http://localhost:3000/api/auth/login'
-const router = useRouter()
+const router = useRouter();
 
 const submitting = ref(false)
 
@@ -85,47 +84,42 @@ const password = ref(null)
 //const role = ref(null)
 //const accept = ref(false)
 async function onSubmit () {
-  // if (accept.value !== true) {
-  //   $q.notify({
-  //     color: 'red-5',
-  //     textColor: 'white',
-  //     icon: 'warning',
-  //     message: 'You need to accept the license and terms first'
-  //   })
-  // }
-  // else {
-  //   $q.notify({
-  //     color: 'green-4',
-  //     textColor: 'white',
-  //     icon: 'cloud_done',
-  //     message: 'Submitted'
-  //   })
+  try {
+    submitting.value = true;
 
- 
-  // }
-      try {
-        submitting.value = true;
-      const theUser = {email:email.value, password: password.value}
-      const response = await axios.post(url, theUser);
-     // console.log(response.data)
+    const theUser = {
+      email: email.value,
+      password: password.value
+    };
 
-      console.log(response.data.message)
-      localStorage.setItem('jwToken', response.data.jwt)
-      storeUserRole(response.data.currentUser.role)
-      storeUsername(response.data.currentUser.username)
-      onReset()
-      router.push("/").then(() => console.log("navigating to /...")).catch(e => console.log("push err ", e))
-    } catch (error) {
-      console.error("axios err ",error)
-    } finally {
-      submitting.value = false
-    }
-} // onSubmit
+    const response = await axios.post('http://localhost:3000/api/auth/login', theUser, {
+      withCredentials: true // ✅ Send cookies
+    });
+
+    // ✅ Updated to match new backend response
+    const { user, message } = response.data;
+
+    storeUserRole(user.role);
+    storeUsername(user.username);
+
+    console.log(message);
+    onReset();
+
+    router.push("/").then(() => console.log("navigating to /...")).catch(e => console.log("push err ", e));
+  } catch (error) {
+    console.error("axios err", error);
+    alert(`Something went wrong. Please, try again.`);
+  } finally {
+    submitting.value = false;
+  }
+}
+
 
 function onReset () {
     email.value = null
  // name.value = null
   password.value = null
+  submitting.value = false;
  // role.value = null
  // accept.value = false
 }

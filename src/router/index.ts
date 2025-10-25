@@ -5,6 +5,7 @@ import {
   createWebHashHistory,
   createWebHistory,
 } from 'vue-router';
+import { fetchUserAuth } from 'src/helpers/checkAuthStatus';
 import routes from './routes';
 
 /*
@@ -30,6 +31,30 @@ export default defineRouter(function (/* { store, ssrContext } */) {
     // quasar.conf.js -> build -> publicPath
     history: createHistory(process.env.VUE_ROUTER_BASE),
   });
+
+
+Router.beforeEach(async (to, from, next) => {
+  if (to.meta.requiresAuth) {
+    try {
+      const { authenticated, user } = await fetchUserAuth(); // updated helper
+      if (!authenticated) {
+        return next("/login");
+      }
+
+      const requiredRoles = to.meta.roles as string[];
+      if (requiredRoles && !requiredRoles.includes(user.role)) {
+        return next("/unauthorized");
+      }
+    } catch (error) {
+      console.error("Auth check failed:", error);
+      return next("/login");
+    }
+  }
+
+  next();
+});
+
+
 
   return Router;
 });

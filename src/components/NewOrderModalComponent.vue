@@ -259,12 +259,14 @@ const formattedDate = readyDate.toLocaleDateString('en-US', { weekday: 'short', 
   // console.log(order);
   //  console.log("<<<<<<New Order>>>>>>>");
    try {
-    const response = await axios.post('http://localhost:3000/api/user/storefront', order);
-    console.log("New Order booked: ", response.data)
+    const response = await axios.post('http://localhost:3000/api/user/storefront', order, {withCredentials:true});
+    console.log("New Order booked: ", response.data);
+    reset();
+    location.reload();
    } catch (error) {
     console.error("Error booking Order: ", error)
    }
-reset()
+  //reset()
 }
 
 const reset = () => {

@@ -39,7 +39,7 @@
         </div>
     </div>
       <div>
-        <p class="p-segment"><strong>The week of </strong> {{ weekStart }} - {{ weekEnd }}</p>
+        <p class="p-segment"><strong>The week of </strong> {{ weekStart ?? '🚨' }} - {{ weekEnd ?? '🚨' }}</p>
                 <q-list id="week-list" v-if="row2.length > 0">
                   <q-item class="item-card" v-for="r2 in row2" :key="r2._id">
         <q-item-section class="item-section" @click="showOrderDetails(r2._id, r2.orderNo, r2.comment, r2.phone, r2.customer,r2.dropOff,r2.due,r2.garments,r2.pickupPoint,r2.totalDue)">
@@ -61,7 +61,7 @@
       </q-item>
 
         </q-list>
-               <div v-else>
+               <div class="q-pa-md" v-else>
           <q-item-section>
             <q-item-label>No order due for the week!</q-item-label>
           </q-item-section>
@@ -204,14 +204,15 @@ const showOrderDetails = (docId: string, orderNo: string, comment: string, phone
 
 const fetchTodayOrders = async () => {
   try {
-    const response = await axios.get(api);
-  //  console.log("Orders: ", response.data)
+    const response = await axios.get(api, {withCredentials:true});
+    //console.log("Orders: ", response.data)
         const resArr = Object.keys(response.data).map(key => {
       return response.data[key]
     });
     resArr.forEach(x => {
      // console.log(x.due);
             const outcome = checkDateStatus(x.due);
+          //  console.log(outcome);
             /**
              * {
                 isToday: false,
