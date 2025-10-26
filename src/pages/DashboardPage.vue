@@ -91,10 +91,14 @@
    </div>
  
 
-
-  <div class="q-pa-md" style="height: 260px;width: 400px;margin-top: 5%;">
-    <Line :data="data" :options="options"/>
+  <div class="q-pa-sm chart-row">
+  <div class="q-pa-md chart-div">
+    <Line v-if="!loading" :data="data" :options="options"/>
   </div>
+    <div class="q-pa-md chart-div">
+    <Pie v-if="!loading" :data="pieData" :options="options"/>
+  </div>
+</div>
 </template>
 
 <script setup lang="ts">
@@ -102,6 +106,7 @@ import { onMounted } from 'vue';
 import { useArchives } from 'src/composables/useArchives';
 import {
   Chart as ChartJS,
+  ArcElement,
   CategoryScale,
   LinearScale,
   PointElement,
@@ -110,10 +115,11 @@ import {
   Tooltip,
   Legend
 } from 'chart.js'
-import { Line } from 'vue-chartjs'
+import { Line, Pie } from 'vue-chartjs'
 
 
 ChartJS.register(
+  ArcElement,
   CategoryScale,
   LinearScale,
   PointElement,
@@ -124,7 +130,7 @@ ChartJS.register(
 )
 
 
-const {items, monthName, sumTotal, loading, error} = useArchives();
+const {items, monthName, sumTotal, home, store, loading, error} = useArchives();
 
  console.log("MonthTotal: ", monthName)
   console.log("SumTotal: ", sumTotal.value)
@@ -153,6 +159,17 @@ const data = {
   ]
 }
 
+// Pie chart config
+const pieData = {
+  labels: ['Home', 'Store'],
+  datasets: [
+    {
+      backgroundColor: [ '#E46651', '#DD1B16'],
+      data: [home.value, store.value]
+    }
+  ]
+}
+
 const options = {
   responsive: true,
   maintainAspectRatio: false
@@ -176,13 +193,19 @@ onMounted(() => {
     flex-direction: row;
     
 }
-/* .stars {
-  align-self: center;
-} */
+.chart-div {
+  height: 260px;
+  width: 400px;
+  margin-top: 5%;
+}
+.chart-row {
+  display: flex;
+  flex-direction: row;
+}
 .summary-row {
     display: flex;
     flex-direction: row;
-    justify-content: space-around;
+    justify-content: space-evenly;
     margin-top: 2%;
 }
 .responsive {
@@ -191,5 +214,28 @@ onMounted(() => {
     padding: 6px;
     /* background-color: yellow; */
 }
+
+@media only screen and (max-width: 700px) {
+  .chart-div {
+    width: 300px;
+  }
+  .chart-row {
+    flex-direction: column;
+    min-width: 280px;
+  }
+}
+@media only screen and (max-width: 350px) {
+    .summary-row {
+    max-width: 240px;
+  }
+}
+
+@media (min-width:320px)  { /* smartphones, iPhone, portrait 480x320 phones */ }
+@media (min-width:481px)  { /* portrait e-readers (Nook/Kindle), smaller tablets @ 600 or @ 640 wide. */ }
+@media (min-width:641px)  { /* portrait tablets, portrait iPad, landscape e-readers, landscape 800x480 or 854x480 phones */ }
+@media (min-width:961px)  { /* tablet, landscape iPad, lo-res laptops ands desktops */ }
+@media (min-width:1025px) { /* big landscape tablets, laptops, and desktops */ }
+@media (min-width:1281px) { /* hi-res laptops and desktops */ }
+
 </style>
 

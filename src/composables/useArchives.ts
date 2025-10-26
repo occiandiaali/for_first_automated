@@ -47,6 +47,8 @@ interface ArchivedItem {
   const monthName = monthNames[currentMonth];
 
   const sumTotal = ref(0)
+  const home = ref(0)
+  const store = ref(0)
 
 /**
  * _id:68fb71d580f5cd054c578e09
@@ -75,14 +77,23 @@ export function useArchives() {
     try {
       const response = await axios.get<ArchivedItem[]>('http://localhost:3000/api/admin/archive', {withCredentials:true});
       let total = 0;
+      let h = 0;
+      let s = 0;
       items.value = response.data;
           items.value.forEach(v => {
       if (v.title === monthName) {
       //  monthTotal.push(v.content.totalDue)
-      total += v.content.totalDue
+      total += v.content.totalDue;
+      if (v.content.pickupPoint === "Home") {
+        h += 1
+      } else {
+        s += 1
+      }
     }
   })
   sumTotal.value = total
+  home.value = h;
+  store.value = s;
    // console.log("useArchives arr ",monthTotal)
     } catch (err) {
       error.value = 'Failed to fetch archived items';
@@ -91,21 +102,8 @@ export function useArchives() {
       loading.value = false;
     }
   };
-  // const fetchMonthlySales = async () => {
-
-  //   try {
-  //     const response = await axios.get<{[key: string]:number}[]>('http://localhost:3000/api/admin/monthlySales', {withCredentials:true});
-  //     monthTotal.value = response.data;
-      
-  //   } catch (error) {
-          
-  //     console.error('Failed to fetch monthTotal items', error)
-  //   }finally {
-  //     loading.value = false;
-  //   }
-  // }
 
   onMounted(fetchArchivedItems);
 
-  return { items, monthName, sumTotal, loading, error };
+  return { items, monthName, sumTotal, home, store, loading, error };
 }
