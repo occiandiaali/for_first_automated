@@ -1,37 +1,38 @@
 <template>
    <q-page>
     <div class="search-row">
-          <q-input color="deep-orange" class="search-span" v-model="searchOrdersText" label="Search">
-        <template v-slot:prepend>
-          <q-icon name="search" />
-        </template>
-      </q-input>
-       <q-btn square color="deep-orange" icon="add" id="new-order" @click="showNewOrderForm('It works!')" />
+
+            <q-fab color="secondary" push icon="keyboard_arrow_right" direction="right">
+        <q-fab-action color="orange" @click="showNewOrderForm()" icon="add" />
+        <q-fab-action color="accent" @click="showNewOrderForm()" icon="alarm" />
+      </q-fab>
+
       </div>
-      <NewOrderModalComponent v-model="newOrderModalOpen" :data="modalContent"/>
+      <NewOrderModalComponent v-model="newOrderModalOpen" />
       <br>
       <div id="today-div">
           <p class="p-segment"><strong>Today</strong> {{ todayDate }}</p>
           <q-list id="today-list" v-if="row1.length > 0">
-        <q-item class="item-card" v-for="r1 in row1" :key="r1._id">
-        <q-item-section class="item-section" @click="showOrderDetails(r1._id, r1.orderNo, r1.comment, r1.phone, r1.customer,r1.dropOff,r1.due,r1.garments,r1.pickupPoint,r1.totalDue)">
-          <q-item-label><strong>{{ r1.customer }}</strong></q-item-label>
-          <q-item-label caption>{{ r1.comment }}</q-item-label>
-          <q-item-label>{{ r1.garments.length }} {{ r1.garments.length > 1 ? 'items' : 'item' }}</q-item-label>
-          <q-item-label caption>{{ r1.due }}</q-item-label>
-        </q-item-section>
-
-        <q-item-section side top>
-          <q-item-label caption>Pick-up @ {{ r1.pickupPoint }}</q-item-label>
-          <div class="text-orange">
-            <q-icon name="star" />
-            <q-icon name="star" />
-            <q-icon name="star" />
-          </div>
-        </q-item-section>
-      </q-item>
-    
-        </q-list>
+            <q-item class="item-card" v-for="r1 in row1" :key="r1._id">
+              <q-item-section class="item-section" @click="showOrderDetails(r1._id, r1.orderNo, r1.comment, r1.phone, r1.customer,r1.dropOff,r1.due,r1.garments,r1.pickupPoint,r1.totalDue)">
+                <q-item-label><strong>{{ r1.customer }}</strong></q-item-label>
+                <q-item-label caption>{{ r1.comment }}</q-item-label>
+                <q-item-label>{{ r1.garments.length }} {{ r1.garments.length > 1 ? 'items' : 'item' }}</q-item-label>
+                <q-item-label caption>{{ r1.due }}</q-item-label>
+              </q-item-section>
+              
+              <q-item-section side top>
+                <q-item-label caption>Pick-up @ {{ r1.pickupPoint }}</q-item-label>
+                <div class="text-orange">
+                  <q-icon name="star" />
+                  <q-icon name="star" />
+                  <q-icon name="star" />
+                </div>
+              </q-item-section>
+            </q-item>
+            
+          </q-list>
+          <q-item-section class="q-pa-md" v-else-if="rowLoading">Loading..</q-item-section>
         <div class="q-pa-md" v-else>
           <q-item-section>
             <q-item-label>No order due for today...</q-item-label>
@@ -42,25 +43,26 @@
         <p class="p-segment"><strong>The week of </strong> {{ weekStart ?? '🚨' }} - {{ weekEnd ?? '🚨' }}</p>
                 <q-list id="week-list" v-if="row2.length > 0">
                   <q-item class="item-card" v-for="r2 in row2" :key="r2._id">
-        <q-item-section class="item-section" @click="showOrderDetails(r2._id, r2.orderNo, r2.comment, r2.phone, r2.customer,r2.dropOff,r2.due,r2.garments,r2.pickupPoint,r2.totalDue)">
-          <q-item-label><strong>{{ r2.customer }}</strong></q-item-label>
-          <!-- <q-item-label>To pay: ₦{{ r2.totalDue }}</q-item-label> -->
-           <q-item-label caption>Submitted: {{ r2.dropOff }}</q-item-label>
-          <q-item-label caption>Due: {{ r2.due }}</q-item-label>
-          
-        </q-item-section>
-
-        <q-item-section side top>
-          <q-item-label caption>{{ r2.pickupPoint }}</q-item-label>
-          <div class="text-orange">
-            <q-icon name="star" />
-            <q-icon name="star" />
-            <q-icon name="star" />
-          </div>
-        </q-item-section>
-      </q-item>
-
-        </q-list>
+                    <q-item-section class="item-section" @click="showOrderDetails(r2._id, r2.orderNo, r2.comment, r2.phone, r2.customer,r2.dropOff,r2.due,r2.garments,r2.pickupPoint,r2.totalDue)">
+                      <q-item-label><strong>{{ r2.customer }}</strong></q-item-label>
+                      <!-- <q-item-label>To pay: ₦{{ r2.totalDue }}</q-item-label> -->
+                      <q-item-label caption>Submitted: {{ r2.dropOff }}</q-item-label>
+                      <q-item-label caption>Due: {{ r2.due }}</q-item-label>
+                      
+                    </q-item-section>
+                    
+                    <q-item-section side top>
+                      <q-item-label caption>{{ r2.pickupPoint }}</q-item-label>
+                      <div class="text-orange">
+                        <q-icon name="star" />
+                        <q-icon name="star" />
+                        <q-icon name="star" />
+                      </div>
+                    </q-item-section>
+                  </q-item>
+                  
+                </q-list>
+                <q-item-section class="q-pa-md" v-else-if="rowLoading">Loading..</q-item-section>
                <div class="q-pa-md" v-else>
           <q-item-section>
             <q-item-label>No order due for the week!</q-item-label>
@@ -156,7 +158,6 @@ const weekEnd = ref()
 // Heading for the Today section
   const todayDate = ref(new Date().toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }));
 
-const searchOrdersText = ref(); // v-model for search input
 /**
  * 
 comment: "Good customer"
@@ -171,7 +172,7 @@ totalDue: 11140
  */
 const newOrderModalOpen = ref(false)
 const itemDetailsModalOpen = ref(false)
-const modalContent = ref("")
+//const modalContent = ref("")
 const documentId = ref()
 const orderNumber = ref()
 const orderComment = ref()
@@ -183,9 +184,9 @@ const orderBasket = ref()
 const pickupLocation = ref()
 const totalPayment = ref()
 
-const showNewOrderForm = (content:string) => {
+const showNewOrderForm = () => {
   newOrderModalOpen.value = true
-  modalContent.value = content
+ // modalContent.value = content
 }
 
 const showOrderDetails = (docId: string, orderNo: string, comment: string, phone:string, customer:string,  submitDate:string, collectDate:string, clothesArr: Garment[], pup:string, orderTotal: number) => {
@@ -201,9 +202,11 @@ const showOrderDetails = (docId: string, orderNo: string, comment: string, phone
   pickupLocation.value = pup;
   totalPayment.value = orderTotal;
 }
+const rowLoading = ref(false)
 
 const fetchTodayOrders = async () => {
   try {
+    rowLoading.value = true;
     const response = await axios.get(api, {withCredentials:true});
     //console.log("Orders: ", response.data)
         const resArr = Object.keys(response.data).map(key => {
@@ -225,11 +228,13 @@ const fetchTodayOrders = async () => {
              */
       if (outcome.isToday) {
         row1.value.push(x)
+        rowLoading.value = false
       } else if (outcome.isInCurrentWeek) {
         row2.value.push(x)
 
         weekStart.value = outcome.weekRange.start
         weekEnd.value = outcome.weekRange.end
+        rowLoading.value = false;
       }
       
       // console.log("Todays: ", row1.value)
@@ -239,6 +244,8 @@ const fetchTodayOrders = async () => {
 
   } catch (error) {
     console.error("Error fetching orders:", error);
+  } finally {
+    rowLoading.value = false
   }
 }
 

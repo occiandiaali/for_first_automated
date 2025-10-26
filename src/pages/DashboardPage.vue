@@ -36,8 +36,8 @@
         </q-item>
                 <q-item style="justify-self: center; align-self: center;text-align: center;">
                     <q-item-section>
-                      <q-item-label><strong>Pending</strong></q-item-label>
-                        <q-item-label style="font-size: x-large;">6</q-item-label>
+                      <q-item-label><strong>Home deliveries</strong></q-item-label>
+                        <q-item-label style="font-size: large;">{{ home }}</q-item-label>
           <q-item-label caption>First Delivery 09:45</q-item-label>
             <div class="text-orange stars">
             <q-icon name="star" />
@@ -74,17 +74,18 @@
       
         </q-item-section>
         </q-item> -->
-   <div v-if="loading">Getting Archives..</div>
-   <div v-else-if="error">{{ error }}</div>
-   <div v-else class="q-pa-sm summary-row">
+   <div class="q-pa-md" v-if="loading">Getting Archives..</div>
+   <div class="q-pa-md" v-else-if="error">{{ error }}</div>
+   <div v-else class="q-pa-md summary-row">
   
     <div v-for="a in items" :key="a.content.orderNo" style="text-align: center;">
-            <q-item >
+            <q-item class="q-pa-md" v-if="a.content.garments.length >= 2" style="max-width: 250px;">
         <q-item-section>
           <q-item-label overline>Top customer</q-item-label>
         
           <q-item-label style="font-size: large;">{{ a.content.garments.length }}</q-item-label>
-          <q-item-label caption>{{ a.content.customer }}</q-item-label>
+          <q-item-label style="font-size: medium;">{{  a.content.customer }}</q-item-label>
+          <q-item-label caption>&#128222; {{ a.content.phone }}</q-item-label>
         </q-item-section>
       </q-item>
     </div>
@@ -93,10 +94,12 @@
 
   <div class="q-pa-sm chart-row">
   <div class="q-pa-md chart-div">
-    <Line v-if="!loading" :data="data" :options="options"/>
+    <Line v-if="!loading && thisMonthTotalSales" :data="data" :options="lineOptions">Chart could not load</Line>
+    <div v-else>Navigate to another page, then back to see chart.</div>
   </div>
     <div class="q-pa-md chart-div">
-    <Pie v-if="!loading" :data="pieData" :options="options"/>
+    <Pie v-if="!loading" :data="pieData" :options="options">Chart could not load</Pie>
+
   </div>
 </div>
 </template>
@@ -113,9 +116,10 @@ import {
   LineElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
 } from 'chart.js'
 import { Line, Pie } from 'vue-chartjs'
+
 
 
 ChartJS.register(
@@ -154,9 +158,21 @@ const data = {
     {
       label: 'Monthly revenue',
       backgroundColor: '#00ff00',//'#f87979',
-      data: thisMonthTotalSales//[400, 39, 100, 40, 39, 80, 240, 0, 0, total.value, 0, 0]
+      data: thisMonthTotalSales,//[400, 39, 100, 40, 39, 80, 240, 0, 0, total.value, 0, 0]
+      borderColor: 'rgb(75, 192, 192)',
+      tension: 0.1
     }
-  ]
+  ],
+}
+const lineOptions = {
+    responsive: true,
+  maintainAspectRatio: false,
+  plugins: {
+    title: {
+      display: true,
+      text: 'Total payments per month'
+    }
+  }
 }
 
 // Pie chart config
@@ -172,7 +188,13 @@ const pieData = {
 
 const options = {
   responsive: true,
-  maintainAspectRatio: false
+  maintainAspectRatio: false,
+    plugins: {
+    title: {
+      display: true,
+      text: 'Monthly Home delivery vs. Store pick-up'
+    }
+  }
 }
 
 onMounted(() => {
@@ -227,6 +249,7 @@ onMounted(() => {
 @media only screen and (max-width: 350px) {
     .summary-row {
     max-width: 240px;
+    margin-top: 4%;
   }
 }
 

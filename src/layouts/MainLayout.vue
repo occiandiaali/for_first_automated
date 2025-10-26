@@ -23,12 +23,12 @@
 
             <template v-for="(menuItem, index) in filteredMenuList" :key="index">
            
-              <q-item :to="menuItem.route" exact clickable :active="menuItem.isActive" @click="toggleActiveItem(menuItem.isActive)" v-ripple>
+              <q-item :to="menuItem.route" style="color: black;opacity: 5;" exact clickable :class="{'active-item': activeIndex === index}" @click="setActiveItem(index)">
                 <q-item-section avatar>
                   <q-icon :name="menuItem.icon" />
                 </q-item-section>
                 <q-item-section>
-                  {{ menuItem.label }}
+                  <q-item-label >{{ menuItem.label }}</q-item-label>
                 </q-item-section>
               </q-item>
              
@@ -63,16 +63,17 @@ import { getUserRole, getUserName } from 'src/helpers/auth'
 
 import UserProfileComponent from 'src/components/UserProfileComponent.vue';
 
+
 const role = ref(getUserRole() || "user");
 const uname = ref(getUserName())
 
 const showProfile = ref(false)
 const openProfile = () => {
   showProfile.value = !showProfile.value;
-  console.log("Profile: ", showProfile.value)
-
+ // console.log("Profile: ", showProfile.value)
 }
 
+const activeIndex = ref<number|null>(null)
 
 const menuList = [
   // {
@@ -87,7 +88,7 @@ const menuList = [
     route: '/storefront',
     roles: ['admin', 'sales', 'user'],
     separator: true,
-    isActive: true
+    isActive: false
   },
 
   {
@@ -122,13 +123,7 @@ const menuList = [
     separator: true,
     isActive: false
   },
-  // {
-  //   icon: 'dry_cleaning',
-  //   label: 'Category',
-  //   route: '/category',
-  //   separator: true,
-  //   isActive: false
-  // },
+
   {
     icon: 'help',
     iconColor: 'primary',
@@ -149,7 +144,10 @@ const filteredMenuList = computed(() => {
   return menuList.filter(item => item.roles?.includes(role.value))
 })
 
-const toggleActiveItem = (item:boolean|undefined) => item = !item 
+//const toggleActiveItem = (item:boolean|undefined) => item = !item 
+const setActiveItem = (index: number|null) => {
+  activeIndex.value = index;
+}
 
 const rightDrawerOpen = ref(false)
 const toggleRightDrawer = () => {
@@ -160,6 +158,10 @@ const toggleRightDrawer = () => {
 </script>
 
 <style lang="css">
+.active-item {
+  background-color: rgb(170, 163, 163);
+}
+
 .qpContainer {
 width: 100%;
 height: 100%;
@@ -171,7 +173,7 @@ height: 100%;
 }
 
 ::-webkit-scrollbar-thumb {
-    background-color: rgb(143, 57, 7); /* Color of the scrollbar thumb */
+    background-color: rgb(153, 65, 11); /* Color of the scrollbar thumb */
     border-radius: 10px; /* Rounded corners */
 }
 
