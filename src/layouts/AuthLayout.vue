@@ -11,7 +11,7 @@
           type="email"
         filled
         v-model="email"
-        label="Your email *"
+        label="Your email"
         hint="you@example.com"
         lazy-rules
         :rules="[ val => val && val.length > 0 || 'Please type something']"
@@ -28,7 +28,7 @@
             type="password"
         filled
         v-model="password"
-        label="Your password *"
+        label="Your password"
         
         lazy-rules
         :rules="[ val => val && val.length > 0 || 'Please type something']"

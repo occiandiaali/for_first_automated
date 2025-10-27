@@ -1,14 +1,6 @@
 <template>
   <q-page padding>
-              <!-- <div class="search-row">
-          <q-input color="deep-orange" class="search-span" v-model="item" label="Search">
-        <template v-slot:prepend>
-          <q-icon name="search" />
-        </template>
-      </q-input>
-       <q-btn square color="deep-orange" icon="add" id="new-item" @click="showDialog = true"/>
-      </div> -->
-      <q-btn square color="deep-orange" icon="add" id="new-item" @click="showDialog = true"/>
+      <q-btn square color="deep-orange" icon="add" id="new-item" @click="addToRow"/>
       <br>
       <div id="table-div" class="q-pa-md">
         <div v-if="loading" class="q-pa-md v-if-div">
@@ -21,33 +13,37 @@
      title="Price list"
       :rows="fabricItems"
       :columns="columns"
-      row-key="_id"
+      row-key="id"
       flat
       bordered
-    
     >
-    
-      <template v-slot:body-cell="props">
-        <q-td :props="props" >
-      
-            {{ props.row[props.col.name] }}
-              
-            <q-popup-edit
-              v-model="props.row[props.col.name]"
-              title="Edit"
-              buttons
-              @save="onSave(props.row)"
-              
-            >
-              <q-input
-                v-model="props.row[props.col.name]"
-                dense
-                autofocus
+    <template v-slot:body-cell="props">
+      <q-td :props="props">
+         {{ props.row[props.col.name] }}
+      </q-td>
+    </template>
+      <template v-slot:body-cell-actions="props">
+        <q-td :props="props">
+                  {{ props.row[props.col.name] }}
+                  <q-btn
+                  size="sm"
+                    icon="edit"
+                    color="primary"
+                    dense
+                    flat
+                    @click="editRow(props.row, props.row._id)"
+                  />
+                  <q-btn
+                  size="sm"
+                    icon="delete"
+                    color="negative"
+                    dense
+                    flat
+                    @click="deleteRow(props.row, props.row._id)"
+                  />
+                 
+                  </q-td>
                 
-              />
-            </q-popup-edit>
-         
-        </q-td>
       </template>
     </q-table>
     </div>
@@ -56,21 +52,21 @@
           <q-dialog v-model="showDialog" persistent>
       <q-card style="min-width: 250px">
         <q-card-section>
-          <div class="text-h6">Add item</div>
+          <div class="text-h6">{{ addAction ? 'Add' : 'Edit' }} item</div>
         </q-card-section>
 
         <q-card-section class="q-pt-none">
-          <q-input dense v-model="itemName" hint="item name" placeholder="E.g. Shirt, Native, Curtain.."   />
+          <q-input dense v-model="itemName" hint="item name" :placeholder="!addAction ? nameInFocus : ''"    />
         </q-card-section>
                 <q-card-section class="q-pt-none">
-          <q-input type="number" dense v-model="itemPrice" hint="price" placeholder="E.g. 600" />
+          <q-input type="number" dense v-model="itemPrice" hint="price" :placeholder="!addAction ? priceInFocus : ''"  />
         </q-card-section>
         <br/>
      
 
         <q-card-actions align="right" class="text-primary">
           <q-btn flat label="Cancel" v-close-popup />
-          <q-btn flat label="Save" v-close-popup @click="addNewItem(itemName, itemPrice)" />
+          <q-btn flat label="Save" v-close-popup @click="addAction ? addNewItem(itemName, itemPrice) : updateItem(itemName, itemPrice, itemID)" />
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -87,31 +83,32 @@ import axios from 'axios';
 
 const {items, loading, error} = useItems()
 
-//const item = ref() // For search box
-type RowType = [number, string, string]
+
+type RowType = [string, string, number, number, boolean]
+
 type AlignType = "left" | "center" | "right";
-    // const  columns = [
-    //     { name: 'garment', label: 'Garment', field: 'garment', align: 'left' as AlignType },
-    //     { name: 'cost', label: 'Cost', field: 'cost', align: 'right' as AlignType }
-    //   ];
+
     const fabricItems = ref(items)
         const  columns = [
         { name: 'itemName', label: 'Garment', field: 'name', align: 'left' as AlignType },
-        { name: 'itemPrice', label: 'Price', field: 'price', align: 'right' as AlignType }
+        { name: 'itemPrice', label: 'Price', field: 'price', align: 'right' as AlignType },
+        { name: 'actions', label: 'Actions', field: 'actions', align: 'center' as AlignType }
       ];
-    // const  rows = [
-    //     { id: 1, garment: 'T-Shirt', cost: '15' },
-    //     { id: 2, garment: 'Jeans', cost: '40' },
-    //     { id: 3, garment: 'Jacket', cost: '60' }
-    //   ]
 
-    function onSave(row: RowType[]) {
-      console.log('Saved row:', row);
-    }
-
-    const showDialog = ref(false)
-    const itemName = ref()
+const showDialog = ref(false)
+const itemID = ref()
+const itemName = ref()
 const itemPrice = ref()
+const addAction = ref(true)
+const  nameInFocus = ref<string|undefined>(undefined)
+const  priceInFocus = ref<number|undefined>(undefined)
+
+function addToRow() {
+  addAction.value = true;
+  showDialog.value = true;
+  itemName.value = null;
+  itemPrice.value = null;
+}
     
     function addNewItem(name:string, price:number) {
       try {
@@ -130,6 +127,52 @@ const itemPrice = ref()
         }).catch(e => console.error(e))
       } catch (error) {
         console.error(error)
+      }
+    }
+
+  async function updateItem(name:string, price:number, id:string) {
+    try {
+        await axios.put(`http://localhost:3000/api/admin/items/${id}`, 
+    {
+      itemName: name,
+      itemPrice: price
+    }, 
+    {withCredentials:true});
+ 
+    alert(`Updated: ${name}`)
+    location.reload();
+    } catch (error) {
+      console.error(error)
+      alert(`Error while trying to update ${name}..`)
+    } 
+  }  
+
+  const editRow =  (row: RowType, id:string) => {
+       addAction.value = false;
+       showDialog.value = true;
+       itemID.value = id
+
+         for (const [key, value] of Object.entries(row)) {
+   
+    if (addAction.value === false && key === "itemName") {
+      nameInFocus.value = value as string;
+      itemName.value = nameInFocus.value
+    }
+        if (addAction.value === false && key === "itemPrice") {
+      priceInFocus.value = value as number;
+      itemPrice.value = priceInFocus.value
+    }
+
+  }
+    }
+
+    const deleteRow =  (row: RowType, id:string) => {
+      for (const [key,value] of Object.entries(row)) {
+        if (key === "itemName") {
+          if (confirm(`Delete item ${value}, ID:${id}?`)) {
+          console.log(`${value} deleted!`)
+      }
+        }
       }
     }
 
