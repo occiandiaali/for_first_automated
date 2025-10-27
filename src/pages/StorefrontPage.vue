@@ -1,5 +1,5 @@
 <template>
-   <q-page>
+   <q-page padding>
     <div class="search-row">
 
             <q-fab color="secondary" push icon="keyboard_arrow_right" direction="right">
@@ -256,7 +256,7 @@ onMounted(() => {
 
 <style lang="css" scoped>
 .item-card {
-    margin: 8px;
+    margin: 4px;
     background-color: lightgrey;
 }
 #new-order {

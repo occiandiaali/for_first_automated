@@ -1,18 +1,23 @@
 <template>
   <q-page padding>
-              <div class="search-row">
+              <!-- <div class="search-row">
           <q-input color="deep-orange" class="search-span" v-model="item" label="Search">
         <template v-slot:prepend>
           <q-icon name="search" />
         </template>
       </q-input>
        <q-btn square color="deep-orange" icon="add" id="new-item" @click="showDialog = true"/>
-      </div>
+      </div> -->
+      <q-btn square color="deep-orange" icon="add" id="new-item" @click="showDialog = true"/>
       <br>
       <div id="table-div" class="q-pa-md">
-                <div v-if="loading" style="margin: 0 auto;">Loading...</div>
-        <div v-if="error" style="margin: 0 auto;">{{ error }}</div>
+        <div v-if="loading" class="q-pa-md v-if-div">
+          <h5><strong>Loading</strong>...</h5>
+          <q-icon name="dry_cleaning" size="xl"/>
+        </div>
+        <div v-else-if="error" class="q-pa-md" style="color: red;">{{ error }}</div>
     <q-table
+    v-else
      title="Price list"
       :rows="fabricItems"
       :columns="columns"
@@ -49,7 +54,7 @@
     <!--Add New Item Dialog-->
        <div class="q-pa-md q-gutter-sm">
           <q-dialog v-model="showDialog" persistent>
-      <q-card style="min-width: 350px">
+      <q-card style="min-width: 250px">
         <q-card-section>
           <div class="text-h6">Add item</div>
         </q-card-section>
@@ -82,7 +87,7 @@ import axios from 'axios';
 
 const {items, loading, error} = useItems()
 
-const item = ref() // For search box
+//const item = ref() // For search box
 type RowType = [number, string, string]
 type AlignType = "left" | "center" | "right";
     // const  columns = [
@@ -158,6 +163,15 @@ const itemPrice = ref()
 #table-div {
   margin-top: 5%;
 }
+
+.v-if-div {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 25vh;
+}
+
 @media only screen and (max-width: 400px) {
   #table-div {
   margin-top: 15%;

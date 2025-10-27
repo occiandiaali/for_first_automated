@@ -1,18 +1,25 @@
 <template>
-    <q-page>
-            <div class="search-row">
+    <q-page padding>
+            <!-- <div class="search-row">
           <q-input color="deep-orange" class="search-span" v-model="selectStaff" label="Search">
         <template v-slot:prepend>
           <q-icon name="search" />
         </template>
       </q-input>
        <q-btn square color="deep-orange" icon="add" id="new-staff" size="xs" @click="addToRow"/>
-      </div>
+      </div> -->
+      
+        <q-btn square color="deep-orange" icon="add" id="new-staff" @click="addToRow"/>
+      
       <br/>
       <div id="table-div">
-        <div v-if="loading">Loading...</div>
-        <div v-if="error">{{ error }}</div>
+        <div v-if="loading" class="q-pa-md v-if-div">
+          <h5><strong>Loading</strong>...</h5>
+          <q-icon name="people" size="xl"/>
+        </div>
+        <div v-else-if="error" class="q-pa-md" style="color: red;">{{ error }}</div>
        <q-table
+       v-else
        title="Staff access"
       :rows="staff"
       :columns="columns"
@@ -45,7 +52,7 @@
     </div>
     <div class="q-pa-md q-gutter-sm">
           <q-dialog v-model="prompt" persistent>
-      <q-card style="min-width: 350px">
+      <q-card style="min-width: 250px">
         <q-card-section>
           <div class="text-h6">{{ addAction ? 'Add' : 'Edit' }} user</div>
         </q-card-section>
@@ -84,7 +91,7 @@ const {users, loading, error} = useUsers()
 type RowType = [number, string, string, string]
 type AlignType = "left" | "center" | "right";
 
-const selectStaff = ref()
+//const selectStaff = ref()
 const name = ref()
 const email = ref()
 const prompt = ref(false)
@@ -195,8 +202,9 @@ function deleteRow(id:string) {
 
 <style lang="css" scoped>
 #new-staff {
-    margin-left: 14px;
+    margin: 6px;
 }
+/*
 .search-row {
     display: flex;
     flex-direction: row;
@@ -209,8 +217,17 @@ function deleteRow(id:string) {
 .search-span {
     width: 96%;
 }
+    */
 #table-div {
   margin-top: 5%;
+}
+
+.v-if-div {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 25vh;
 }
 
 @media only screen and (max-width: 400px) {

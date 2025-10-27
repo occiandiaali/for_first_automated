@@ -1,26 +1,14 @@
 <template>
+  <q-page padding>
     <div class="summary-row">
-        <!-- <q-item style="justify-self: center; align-self: center;text-align: center;">
-                    <q-item-section side top>
-                        <q-item-label style="font-size: x-large;">3</q-item-label>
-                        <q-item-label><strong>Remaining Today</strong></q-item-label>
-          <q-item-label caption>Next Delivery 10/21</q-item-label>
-                            <div class="text-orange stars">
-            <q-icon name="star" />
-            <q-icon name="star" />
-            <q-icon name="star" />
-             <q-icon name="star" />
-            <q-icon name="star" />
-          </div>
-        </q-item-section>
-        </q-item> -->
                 <q-item style="justify-self: center; align-self: center;text-align: center;">
                     <q-item-section>
                       <q-item-label><strong>Month Revenue</strong></q-item-label>
                         <q-item-label style="font-size: x-large;">{{ new Intl.NumberFormat('en-NG', {
-    style: 'currency',
-    currency: 'NGN'
-}).format(sumTotal) }}</q-item-label>
+                    style: 'currency',
+                    currency: 'NGN'
+                }).format(sumTotal) }}
+                </q-item-label>
           <q-item-label caption>Last just added</q-item-label>
           <!-- <q-icon name="star" color="yellow" />
           <q-icon name="star" color="yellow" />
@@ -40,8 +28,8 @@
                         <q-item-label style="font-size: large;">{{ home }}</q-item-label>
           <q-item-label caption>First Delivery 09:45</q-item-label>
             <div class="text-orange stars">
-            <q-icon name="star" />
-            <q-icon name="star" />
+            <q-icon name="star" v-for="i in home" :key="i"/>
+            
 
           </div>
         </q-item-section>
@@ -74,12 +62,12 @@
       
         </q-item-section>
         </q-item> -->
-   <div class="q-pa-md" v-if="loading">Getting Archives..</div>
+   <div class="q-pa-md" v-if="loading">Getting data..</div>
    <div class="q-pa-md" v-else-if="error">{{ error }}</div>
-   <div v-else class="q-pa-md summary-row">
+   <div v-else class="summary-row">
   
-    <div v-for="a in items" :key="a.content.orderNo" style="text-align: center;">
-            <q-item class="q-pa-md" v-if="a.content.garments.length >= 2" style="max-width: 250px;">
+    <div v-for="a in items" :key="a.content.orderNo" class="top-customer-div">
+            <q-item v-if="a.content.garments.length >= 3" style="max-width: 250px;">
         <q-item-section>
           <q-item-label overline>Top customer</q-item-label>
         
@@ -95,13 +83,14 @@
   <div class="q-pa-sm chart-row">
   <div class="q-pa-md chart-div">
     <Line v-if="!loading && thisMonthTotalSales" :data="data" :options="lineOptions">Chart could not load</Line>
-    <div v-else>Navigate to another page, then back to see chart.</div>
+    <div v-else class="q-pa-md">Trying to load Line chart..</div>
   </div>
     <div class="q-pa-md chart-div">
     <Pie v-if="!loading" :data="pieData" :options="options">Chart could not load</Pie>
-
+    <div v-else class="q-pa-md">Trying to load Pie chart..</div>
   </div>
 </div>
+</q-page>
 </template>
 
 <script setup lang="ts">
@@ -218,7 +207,7 @@ onMounted(() => {
 .chart-div {
   height: 260px;
   width: 400px;
-  margin-top: 5%;
+  margin-top: 3%;
 }
 .chart-row {
   display: flex;
@@ -235,6 +224,14 @@ onMounted(() => {
     height: 200px;
     padding: 6px;
     /* background-color: yellow; */
+}
+
+.top-customer-div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 4px;
+  height: 120px;
 }
 
 @media only screen and (max-width: 700px) {
