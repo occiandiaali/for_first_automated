@@ -71,7 +71,7 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import axios from 'axios'
-import { storeUsername, storeUserRole } from 'src/helpers/auth'
+import { storeUserId, storeUsername, storeUserRole } from 'src/helpers/auth'
 
 //const $q = useQuasar()
 const router = useRouter();
@@ -101,6 +101,7 @@ async function onSubmit () {
 
     storeUserRole(user.role);
     storeUsername(user.username);
+    storeUserId(user.userId);
 
     console.log(message);
     onReset();

@@ -35,7 +35,7 @@
           <q-item-section class="q-pa-md" v-else-if="rowLoading">Loading..</q-item-section>
         <div class="q-pa-md" v-else>
           <q-item-section>
-            <q-item-label>No order due for today...</q-item-label>
+            <q-item-label>Couldn't find orders for today...</q-item-label>
           </q-item-section>
         </div>
     </div>
@@ -65,7 +65,7 @@
                 <q-item-section class="q-pa-md" v-else-if="rowLoading">Loading..</q-item-section>
                <div class="q-pa-md" v-else>
           <q-item-section>
-            <q-item-label>No order due for the week!</q-item-label>
+            <q-item-label>Couldn't find orders due for the week!</q-item-label>
           </q-item-section>
         </div>
       </div>

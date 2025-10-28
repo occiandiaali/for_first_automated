@@ -67,7 +67,7 @@
    <div v-else class="summary-row">
   
     <div v-for="a in items" :key="a.content.orderNo" class="top-customer-div">
-            <q-item v-if="a.content.garments.length >= 3" style="max-width: 250px;">
+            <q-item v-if="a.content.garments.length >= 3" style="max-width: 250px;text-align: center;">
         <q-item-section>
           <q-item-label overline>Top customer</q-item-label>
         
@@ -83,11 +83,11 @@
   <div class="q-pa-sm chart-row">
   <div class="q-pa-md chart-div">
     <Line v-if="!loading && thisMonthTotalSales" :data="data" :options="lineOptions">Chart could not load</Line>
-    <div v-else class="q-pa-md">Trying to load Line chart..</div>
+    <div v-else class="q-pa-md">Trying to load payments data..</div>
   </div>
     <div class="q-pa-md chart-div">
-    <Pie v-if="!loading" :data="pieData" :options="options">Chart could not load</Pie>
-    <div v-else class="q-pa-md">Trying to load Pie chart..</div>
+    <Pie v-if="!loading && (home || store)" :data="pieData" :options="options">Chart could not load</Pie>
+    <div v-else class="q-pa-md">Trying to load Pick-up data..</div>
   </div>
 </div>
 </q-page>

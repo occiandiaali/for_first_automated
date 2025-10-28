@@ -8,6 +8,7 @@
             <img src="https://cdn.quasar.dev/logo-v2/svg/logo-mono-white.svg">
           </q-avatar>
           First Automated
+          <span style="color: blue;">{{ onlineStatus }}</span>
         </q-toolbar-title>
 
         <q-btn dense flat round icon="menu" @click="toggleRightDrawer" />
@@ -58,7 +59,7 @@
 </template>
 
 <script setup lang="ts">
-import {computed, ref } from 'vue'
+import {computed, onMounted, onUnmounted, ref } from 'vue'
 import { getUserRole, getUserName } from 'src/helpers/auth'
 
 import UserProfileComponent from 'src/components/UserProfileComponent.vue';
@@ -153,6 +154,32 @@ const rightDrawerOpen = ref(false)
 const toggleRightDrawer = () => {
   rightDrawerOpen.value = !rightDrawerOpen.value
 }
+
+// // Retrieving the avatar
+// function loadAvatar() {
+//     const avatar = localStorage.getItem('avatar');
+//     if (avatar) {
+//         document.getElementById('avatarImage').src = avatar;
+//     }
+// }
+    const isOnline = ref(navigator.onLine);
+    const onlineStatus = computed(() => (isOnline.value ? '' : 'offline..'))
+
+    const updateOnlineStatus = () => {
+      isOnline.value = navigator.onLine;
+      // if (isOnline.value === false) {
+      //   alert("You may be offline. Check your connection..")
+      // }
+    };
+    onMounted(() => {
+      window.addEventListener('online', updateOnlineStatus);
+      window.addEventListener('offline', updateOnlineStatus);
+    });
+
+    onUnmounted(() => {
+      window.removeEventListener('online', updateOnlineStatus);
+      window.removeEventListener('offline', updateOnlineStatus);
+    });
 
 
 </script>

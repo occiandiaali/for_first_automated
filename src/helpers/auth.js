@@ -3,6 +3,14 @@ import axios from "axios";
 
 const router = useRouter();
 
+export function getUserId() {
+    return localStorage.getItem('userId');
+}
+export function storeUserId(id) {
+    if (!id) throw new Error("Missing ID")
+    localStorage.setItem('userId', id)
+}
+
 export function getUserRole() {
     return localStorage.getItem('userRole') || 'user';
 }
