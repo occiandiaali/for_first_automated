@@ -34,6 +34,8 @@ export function logoutUser() {
   .then(() => {
       localStorage.removeItem('userRole')
       localStorage.removeItem('userName')
+      localStorage.removeItem('userId')
+      localStorage.removeItem('thisMonthTotalSales')
       router?.push('/login')
 
   }).catch(e => console.error('Logout err ',e))

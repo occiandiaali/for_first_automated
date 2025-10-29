@@ -42,7 +42,7 @@
           <div class="absolute-bottom bg-transparent">
             <q-avatar size="56px" class="q-mb-sm cursor-pointer">
               <!-- <img src="https://cdn.quasar.dev/img/boy-avatar.png"> -->
-              <img src="https://ionicframework.com/docs/img/demos/avatar.svg" @click="openProfile">
+              <img :src="userAvatar ? userAvatar : 'https://ionicframework.com/docs/img/demos/avatar.svg'" @click="openProfile">
             </q-avatar>
             <div class="text-weight-bold">{{ uname }}</div>
             <div>@{{ role }}</div>
@@ -67,6 +67,8 @@ import UserProfileComponent from 'src/components/UserProfileComponent.vue';
 
 const role = ref(getUserRole() || "user");
 const uname = ref(getUserName())
+
+const userAvatar = ref()
 
 const showProfile = ref(false)
 const openProfile = () => {
