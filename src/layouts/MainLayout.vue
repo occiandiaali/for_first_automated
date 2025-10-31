@@ -1,14 +1,17 @@
 <template>
   <q-layout view="hHh lpR fFf">
 
-    <q-header class="bg-deep-orange text-white">
+    <q-header class="bg-teal text-yellow-8">
       <q-toolbar>
+        <q-avatar>
+          <img src="https://cdn.quasar.dev/logo-v2/svg/logo-mono-white.svg">
+        </q-avatar>
         <q-toolbar-title>
-          <q-avatar>
-            <img src="https://cdn.quasar.dev/logo-v2/svg/logo-mono-white.svg">
-          </q-avatar>
-          First Automated
-          <span style="color: blue;">{{ onlineStatus }}</span>
+          1st Automated
+          <q-item-label style="color: lightblue;" caption>
+            Laundry & Dry-cleaners
+            <span style="color: white;">{{ onlineStatus }}</span>
+          </q-item-label>
         </q-toolbar-title>
 
         <q-btn dense flat round icon="menu" @click="toggleRightDrawer" />
@@ -60,7 +63,7 @@
 
 <script setup lang="ts">
 import {computed, onMounted, onUnmounted, ref } from 'vue'
-import { getUserRole, getUserName } from 'src/helpers/auth'
+import { getUserRole, getUserName, getUserPic } from 'src/helpers/auth'
 
 import UserProfileComponent from 'src/components/UserProfileComponent.vue';
 
@@ -127,13 +130,13 @@ const menuList = [
     isActive: false
   },
 
-  {
-    icon: 'help',
-    iconColor: 'primary',
-    label: 'Help',
-     roles: ['admin', 'user'],
-    separator: false
-  },
+  // {
+  //   icon: 'help',
+  //   iconColor: 'primary',
+  //   label: 'Help',
+  //    roles: ['admin', 'sales', 'user'],
+  //   separator: false
+  // },
   {
     icon: 'logout',
     label: 'LogOut',
@@ -165,7 +168,7 @@ const toggleRightDrawer = () => {
 //     }
 // }
     const isOnline = ref(navigator.onLine);
-    const onlineStatus = computed(() => (isOnline.value ? '' : 'offline..'))
+    const onlineStatus = computed(() => (isOnline.value ? '' : 'You are offline..'))
 
     const updateOnlineStatus = () => {
       isOnline.value = navigator.onLine;
@@ -174,6 +177,8 @@ const toggleRightDrawer = () => {
       // }
     };
     onMounted(() => {
+      const userPic = getUserPic();
+      userAvatar.value = userPic;
       window.addEventListener('online', updateOnlineStatus);
       window.addEventListener('offline', updateOnlineStatus);
     });

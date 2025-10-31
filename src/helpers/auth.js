@@ -29,6 +29,17 @@ export function getUserName() {
     return localStorage.getItem('userName') || '';
 }
 
+export function storeUserpic(pic) {
+    if (!pic) throw new Error("Missing photo")
+    localStorage.setItem('userPic', JSON.stringify(pic));
+    location.reload();
+}
+
+export function getUserPic() {
+    const parsedItem = JSON.parse(localStorage.getItem('userPic'))
+    if (parsedItem) return parsedItem;
+}
+
 export function logoutUser() {
   axios.post('http://localhost:3000/api/auth/logout', {}, {withCredentials:true})
   .then(() => {
@@ -36,6 +47,7 @@ export function logoutUser() {
       localStorage.removeItem('userName')
       localStorage.removeItem('userId')
       localStorage.removeItem('thisMonthTotalSales')
+    //  localStorage.removeItem('userPic')
       router?.push('/login')
 
   }).catch(e => console.error('Logout err ',e))

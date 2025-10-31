@@ -8,7 +8,7 @@
         </q-card-section>
 
         <q-card-section>
-            <q-file :model-value="null" hint="Click cancel once you see the pic below" outlined @update:model-value="onFileSelected" color="grey-3" label="Upload photo" accept="image/*">
+            <q-file :model-value="null" :hint="previewUrl ? 'Click Save to use the photo' : 'Choose your Profile photo (20KB max)'" outlined @update:model-value="onFileSelected" color="grey-3" label="Upload photo" accept="image/*">
         <template v-slot:append>
           <q-icon name="attachment" color="orange" />
         </template>
@@ -18,6 +18,8 @@
     </div>
           <div v-if="previewUrl">
       <img :src="previewUrl.toString()" alt="Profile Preview" style="max-width: 40px; margin-top: 10px;" />
+      <br/>
+      <q-btn color="orange-14" size="sm" outline label="Save" @click="storeUserpic(previewUrl)" v-close-popup/>
     </div>
 
         </q-card-section>
@@ -37,7 +39,7 @@
 
         <q-card-actions align="right" class="text-secondary">
           <q-btn flat label="Cancel" v-close-popup />
-          <q-btn outline label="Update" @click="updatePassword"  />
+          <q-btn :disable="!isPasswordValid" outline label="Update password" @click="updatePassword"  />
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -47,7 +49,7 @@
 <script setup lang="ts">
 import { useQuasar } from 'quasar';
 import { ref } from 'vue';
-import { getUserName, getUserId } from 'src/helpers/auth';
+import { getUserName, getUserId, storeUserpic } from 'src/helpers/auth';
 import { isAlphanumericLength8 } from 'src/helpers/checkAlphaNumericLen';
 
 import axios from 'axios'
@@ -76,6 +78,7 @@ function onFileSelected(file: Blob) {
       previewUrl.value = reader.result
       // You can now send reader.result to your backend or save it locally
       console.log("reader.result ", previewUrl.value)
+      
     }
     reader.readAsDataURL(file)
   } else {
@@ -107,12 +110,9 @@ const {show = false} = defineProps<{show: boolean}>()
 
   
 
-// function storeAvatarLocally(file: Blob) {
-//   const reader = new FileReader();
-//   reader.onloadend = function() {
-//     localStorage.setItem('userPic', JSON.stringify(reader.result));
-//   };
-//   reader.readAsDataURL(file)
+// function storeAvatarLocally() {
+//   localStorage.setItem('userPic', JSON.stringify(previewUrl.value));
+//   location.reload();
 // }
 
 const updatePassword = async () => {

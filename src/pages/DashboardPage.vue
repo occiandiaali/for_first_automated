@@ -3,7 +3,7 @@
     <div class="summary-row">
                 <q-item style="justify-self: center; align-self: center;text-align: center;">
                     <q-item-section>
-                      <q-item-label><strong>Month Revenue</strong></q-item-label>
+                      <q-item-label><strong>{{ monthName }} Revenue</strong></q-item-label>
                         <q-item-label style="font-size: x-large;">{{ new Intl.NumberFormat('en-NG', {
                     style: 'currency',
                     currency: 'NGN'
@@ -62,21 +62,52 @@
       
         </q-item-section>
         </q-item> -->
+        <q-item-label caption v-if="items">Top customers for {{ monthName }}</q-item-label>
+        <q-item-label caption v-else>No customers for {{ monthName }}</q-item-label>
    <div class="q-pa-md" v-if="loading">Getting data..</div>
    <div class="q-pa-md" v-else-if="error">{{ error }}</div>
+   
    <div v-else class="summary-row">
-  
-    <div v-for="a in items" :key="a.content.orderNo" class="top-customer-div">
-            <q-item v-if="a.content.garments.length >= 3" style="max-width: 250px;text-align: center;">
+    <q-list v-for="item in items" :key="item.content.orderNo" class="q-my-sm" bordered>
+      <q-item  v-if="item.content.garments.length >= 5">
+                <q-item-section avatar>
+          <q-avatar color="orange" text-color="white">
+            {{ item.content.customer.substring(0,1) }}
+          </q-avatar>
+        </q-item-section>
         <q-item-section>
-          <q-item-label overline>Top customer</q-item-label>
-        
-          <q-item-label style="font-size: large;">{{ a.content.garments.length }}</q-item-label>
-          <q-item-label style="font-size: medium;">{{  a.content.customer }}</q-item-label>
-          <q-item-label caption>&#128222; {{ a.content.phone }}</q-item-label>
+          <q-item-label>{{ item.content.customer }}</q-item-label>
+          <q-item-label caption>{{ item.content.garments.length }}</q-item-label>
+        </q-item-section>
+
+                <q-item-section side>
+          <q-icon name="phone" color="green" />
         </q-item-section>
       </q-item>
-    </div>
+      <!--  -->
+    </q-list>
+   
+      <!-- <div v-for="a in items" :key="a.content.orderNo">
+        <div v-if="a.content.garments.length >= 3">
+          <div class="top-customer-div">
+          <span id="topCustomerHeading">Top customer</span>
+        
+          <span id="garmentsLen">{{ a.content.garments.length}}</span>
+          <span id="customerName">{{ a.content.customer}}</span>
+          <span id="customerPhone">&#128222; {{ a.content.phone }}</span>
+          </div>
+        </div>
+      </div> -->
+            <!-- <q-item v-for="a in items" :key="a.content.orderNo"  style="max-width: 250px;text-align: center;">
+        <q-item-section v-if="a.content.garments.length >= 3">
+          <q-item-label overline>Top customer</q-item-label>
+        
+          <q-item-label id="garments-len">{{ a.content.garments.length }}</q-item-label>
+          <q-item-label id="customerName">{{  a.content.customer }}</q-item-label>
+          <q-item-label caption>&#128222; {{ a.content.phone }}</q-item-label>
+        </q-item-section>
+      </q-item> -->
+    
    </div>
  
 
@@ -125,8 +156,8 @@ ChartJS.register(
 
 const {items, monthName, sumTotal, home, store, loading, error} = useArchives();
 
- console.log("MonthTotal: ", monthName)
-  console.log("SumTotal: ", sumTotal.value)
+//  console.log("MonthTotal: ", monthName)
+//   console.log("SumTotal: ", sumTotal.value)
 
 const monthLabels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
@@ -138,6 +169,13 @@ let thisMonthTotalSales:number[] = new Array(monthLabels.length).fill(0);
     localStorage.setItem('thisMonthTotalSales', JSON.stringify(thisMonthTotalSales))
   }
 })
+  // name: String,
+  // price: Number,
+  // amt: Number,
+  // subTotal: Number,
+
+//const res = ref<{name:string,price:number,amt:number,subTotal:number}[]>([])
+
 
 
 // Line chart config
@@ -181,10 +219,12 @@ const options = {
     plugins: {
     title: {
       display: true,
-      text: 'Monthly Home delivery vs. Store pick-up'
+      text: 'Month Home delivery vs. Store pick-up'
     }
   }
 }
+// const customerItems = ref(items)
+// const topCustomerColumns: unknown[] = []
 
 onMounted(() => {
   const data:number[] = JSON.parse(localStorage.getItem("thisMonthTotalSales") || "[]")
@@ -207,17 +247,36 @@ onMounted(() => {
 .chart-div {
   height: 260px;
   width: 400px;
-  margin-top: 3%;
+  margin-top: 4%;
 }
 .chart-row {
   display: flex;
   flex-direction: row;
+}
+#customerName {
+  font-size: medium;
+  font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+}
+#customerPhone {
+  font-size: small;
+  color: gray;
+}
+#garmentsLen {
+  font-size: x-large;
+}
+#garmentsPhone {
+  font-size: small;
+  color: gray;
 }
 .summary-row {
     display: flex;
     flex-direction: row;
     justify-content: space-evenly;
     margin-top: 2%;
+}
+
+#garments-len {
+  font-size: xx-large;
 }
 .responsive {
     width: 100%;
@@ -226,12 +285,24 @@ onMounted(() => {
     /* background-color: yellow; */
 }
 
+#topCustomerHeading {
+  font-size: smaller;
+  font-weight: 400;
+}
+
+.summary-row .top-customer-div {
+   margin-top: 5%;
+}
+
 .top-customer-div {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 4px;
+  padding: 6px;
+ 
   height: 120px;
+  /* background-color: brown; */
 }
 
 @media only screen and (max-width: 700px) {
@@ -242,12 +313,33 @@ onMounted(() => {
     flex-direction: column;
     min-width: 280px;
   }
+  #garments-len {
+  font-size: medium;
 }
-@media only screen and (max-width: 350px) {
+#customerName {
+  font-size: small;
+}
+}
+@media only screen and (max-width: 390px) {
     .summary-row {
-    max-width: 240px;
+    max-width: 340px;
     margin-top: 4%;
   }
+    #garments-len {
+  font-size: x-small;
+}
+
+#customerName {
+  font-size: x-small;
+}
+#customerPhone {
+  font-size: xx-small;
+}
+
+.top-customer-div {
+  flex-direction: column;
+}
+
 }
 
 @media (min-width:320px)  { /* smartphones, iPhone, portrait 480x320 phones */ }

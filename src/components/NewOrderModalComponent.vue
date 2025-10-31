@@ -49,7 +49,7 @@
       />
       <div id="items-select-div">
 
-          <q-btn outline style="color: goldenrod;" label="Clothing Items" @click="selectItems = true" />
+          <q-btn outline style="color: goldenrod;" :label="t ? '₦'+t : 'Clothing Items'" @click="selectItems = true" />
 
        
             <q-dialog v-model="selectItems">

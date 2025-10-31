@@ -1,6 +1,12 @@
 <template>
   <div class="q-pa-md" style="max-width: 500px;margin: 6% auto;background-color: orange;">
-    <h5>First Automated Login</h5>
+    <q-item>
+      <q-item-section>
+        <q-item-label>1st Automated</q-item-label>
+        <q-item-label caption>Laundry & Dry-cleaners</q-item-label>
+      </q-item-section>
+    </q-item>
+    <h5>Login</h5>
     <q-form
       @submit="onSubmit"
       @reset="onReset"
