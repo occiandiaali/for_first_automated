@@ -1,22 +1,32 @@
 <template>
     <q-page>
       <div class="search-row">
-          <q-input color="deep-orange" class="search-span" v-model="customer" label="Search">
+          <q-input color="deep-orange" class="search-span" v-model="customer" label="Type customer name..">
         <template v-slot:prepend>
           <q-icon name="search" />
         </template>
       </q-input>
       </div>
         <br/>
-        <br/>
         <h5>Customers</h5>
+        <div class="q-pa-md">
+          <q-btn color="teal" outline size="xs" label="Month" style="margin-left: 5%;">
+            <q-menu>
+              <q-list style="min-width: 60px;">
+                <q-item clickable v-close-popup v-for="m in 12" :key="m">
+                  <q-item-section>{{ m }}</q-item-section>
+                </q-item>
+              </q-list>
+            </q-menu>
+          </q-btn>
+        </div>
          <q-page-sticky position="top-right" :offset="[18, 68]" id="export-btn">
             <q-btn fab icon="folder" color="teal-9" @click="exportData" />
           </q-page-sticky>
         <div id="table-div">
         <q-list >
-           <q-item v-for="x in archives" :key="x.content.orderNo" class="qItem">
-
+           <q-item v-for="(x,i) in filteredArchives" :key="i" class="qItem">
+            
         <q-item-section top avatar>
            <q-avatar id="avatar" color="teal-5" text-color="white">{{ x.content.customer.substring(0,1) }}</q-avatar>
         </q-item-section>
@@ -53,19 +63,26 @@
           <q-badge :label="'₦'+x.content.totalDue" id="badge"></q-badge>
         </q-item-section>
       </q-item>
+      <q-item-label class="q-pa-md" v-if="filteredArchives.length === 0">No record found</q-item-label>
             </q-list>
         </div>
     </q-page>
 </template>
 
 <script setup lang="ts">
-import {  ref } from 'vue';
+import {  computed, ref } from 'vue';
 import { useArchives } from 'src/composables/useArchives';
 
 const {items} = useArchives()
 
-const customer = ref() // model for search
+const customer = ref('') // model for search
   const archives = ref(items)
+
+const filteredArchives = computed(() => {
+  return archives.value.filter(archive => 
+    archive.content.customer.toLowerCase().includes(customer.value.toLowerCase())
+  )
+})  
 
 //   // For pagination
 //   const itemsPerPage = 5;

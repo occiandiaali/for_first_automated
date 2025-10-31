@@ -1,7 +1,7 @@
 <template>
-    <div class="q-pa-md q-gutter-sm" >
-            <q-dialog v-bind:model-value="show" persistent>
-      <q-card style="min-width: 350px">
+<div class="q-pa-md q-gutter-sm" >
+  <q-dialog v-bind:model-value="show" persistent>
+      <q-card style="min-width: 300px">
         <q-card-section>
           <div class="text-h6">Hi, {{ username }}</div>
         
@@ -141,3 +141,11 @@ function validatePasswordLength() {
  isPasswordValid.value = isAlphanumericLength8(password.value)
 }
 </script>
+
+<style lang="css" scoped>
+@media only screen and (max-width: 390px) {
+  .cunt {
+    width: 280px;
+  }
+}
+</style>
