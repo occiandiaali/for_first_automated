@@ -19,7 +19,9 @@ export function useItems() {
   const fetchItems = async () => {
     loading.value = true;
     try {
-      const response = await axios.get<Item[]>('http://localhost:3000/api/user/items', {withCredentials:true});
+      //https://server-for-first-automated.onrender.com
+      //const response = await axios.get<Item[]>('http://localhost:3000/api/user/items', {withCredentials:true});
+      const response = await axios.get<Item[]>(`${process.env.VUE_APP_API_BASE_URL}/api/user/items`, {withCredentials:true});
       items.value = response.data;
     } catch (err) {
       error.value = 'Failed to fetch items';

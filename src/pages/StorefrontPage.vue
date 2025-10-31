@@ -35,7 +35,7 @@
           <q-item-section class="q-pa-md" v-else-if="rowLoading">Loading..</q-item-section>
         <div class="q-pa-md" v-else>
           <q-item-section>
-            <q-item-label>Couldn't find orders for today...</q-item-label>
+            <q-item-label>Couldn't find orders for today...❌</q-item-label>
           </q-item-section>
         </div>
     </div>
@@ -65,7 +65,7 @@
                 <q-item-section class="q-pa-md" v-else-if="rowLoading">Loading..</q-item-section>
                <div class="q-pa-md" v-else>
           <q-item-section>
-            <q-item-label>Couldn't find orders due for the week!</q-item-label>
+            <q-item-label>Couldn't find orders due for the week! ❌</q-item-label>
           </q-item-section>
         </div>
       </div>
@@ -146,7 +146,7 @@ pickupPoint: string;
 totalDue: number
 }
 
-const api = 'http://localhost:3000/api/user/storefront'
+const api = `${process.env.VUE_APP_API_BASE_URL}/api/user/storefront`;
 
 const row1 = ref<OrderItem[]>([]);
 

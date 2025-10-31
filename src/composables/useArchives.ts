@@ -75,7 +75,9 @@ export function useArchives() {
   const fetchArchivedItems = async () => {
     loading.value = true;
     try {
-      const response = await axios.get<ArchivedItem[]>('http://localhost:3000/api/admin/archive', {withCredentials:true});
+      //https://server-for-first-automated.onrender.com
+      //const response = await axios.get<ArchivedItem[]>('http://localhost:3000/api/admin/archive', {withCredentials:true});
+      const response = await axios.get<ArchivedItem[]>(`${process.env.VUE_APP_API_BASE_URL}/api/admin/archive`, {withCredentials:true});
 
       let total = 0;
       let h = 0;

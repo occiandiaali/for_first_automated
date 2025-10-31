@@ -123,7 +123,7 @@ const updatePassword = async () => {
 
   if (confirm("Are you sure you want to change your password?")) {
     try {
-      const response = await axios.patch('http://localhost:3000/api/user/change-default-password', {
+      const response = await axios.patch(`${process.env.VUE_APP_API_BASE_URL}/api/user/change-default-password`, {
         userId: userid.value,
         newPassword: password.value
       });

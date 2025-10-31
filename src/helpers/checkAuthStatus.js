@@ -2,7 +2,7 @@ import axios from "axios";
 
 export async function fetchUserAuth() {
   try {
-    const response = await axios.get("http://localhost:3000/api/auth/check", {
+    const response = await axios.get(`${process.env.VUE_APP_API_BASE_URL}/api/auth/check`, {
       withCredentials: true,
     });
 

@@ -255,11 +255,9 @@ const formattedDate = readyDate.toLocaleDateString('en-US', { weekday: 'short', 
     totalDue: t.value,
     pickupPoint: pickup.value
   }
-  // console.log("<<<<<<New Order>>>>>>>");
-  // console.log(order);
-  //  console.log("<<<<<<New Order>>>>>>>");
+
    try {
-    const response = await axios.post('http://localhost:3000/api/user/storefront', order, {withCredentials:true});
+    const response = await axios.post(`${process.env.VUE_APP_API_BASE_URL}/api/user/storefront`, order, {withCredentials:true});
     console.log("New Order booked: ", response.data);
     reset();
     location.reload();

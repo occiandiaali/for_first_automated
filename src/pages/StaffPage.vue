@@ -112,7 +112,9 @@ function addNewUser(uname:string,umail:string,urole:string ) {
       password:defaultPassword,
       role:urole,
     }
-    axios.post('http://localhost:3000/api/auth/register', userData, {withCredentials:true})
+    //https://server-for-first-automated.onrender.com
+    //axios.post('http://localhost:3000/api/auth/register', userData, {withCredentials:true})
+    axios.post(`${process.env.VUE_APP_API_BASE_URL}/api/auth/register`, userData, {withCredentials:true})
     .then(response => {
       console.log('User saved: ', response.data);
       name.value = null;
@@ -133,7 +135,8 @@ async function updateUser(uname:string,umail:string,urole:string ) {
       role:urole,
   };
   try {
-    const response = await axios.put(`http://localhost:3000/api/admin/staff/${docID.value}`, updateUser, {withCredentials:true})
+    //const response = await axios.put(`http://localhost:3000/api/admin/staff/${docID.value}`, updateUser, {withCredentials:true})
+    const response = await axios.put(`${process.env.VUE_APP_API_BASE_URL}/api/admin/staff/${docID.value}`, updateUser, {withCredentials:true})
    
       console.log('User updated: ', response.data);
       name.value = null;
@@ -184,7 +187,8 @@ function editRow(row: RowType, id:string) {
     for (const [key,value] of Object.entries(row)) {
         if (key === "username") {
           if (confirm(`Delete access for ${value}?`)) {
-            axios.delete(`http://localhost:3000/api/admin/staff/${id}`)
+            //axios.delete(`http://localhost:3000/api/admin/staff/${id}`)
+            axios.delete(`${process.env.VUE_APP_API_BASE_URL}/api/admin/staff/${id}`)
             .then((response) => {
               location.reload();
               console.log(response.data);

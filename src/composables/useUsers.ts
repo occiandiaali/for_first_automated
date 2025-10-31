@@ -17,7 +17,9 @@ export function useUsers() {
   const fetchUsers = async () => {
     loading.value = true;
     try {
-      const response = await axios.get<User[]>('http://localhost:3000/api/admin/staff', {withCredentials:true});
+      //https://server-for-first-automated.onrender.com
+      //const response = await axios.get<User[]>('http://localhost:3000/api/admin/staff', {withCredentials:true});
+      const response = await axios.get<User[]>(`${process.env.VUE_APP_API_BASE_URL}/api/admin/staff`, {withCredentials:true});
       users.value = response.data;
     } catch (err) {
       error.value = 'Failed to fetch users';
