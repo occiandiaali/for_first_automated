@@ -41,7 +41,7 @@ export function getUserPic() {
 }
 
 export function logoutUser() {
-  axios.post(`${process.env.VUE_APP_API_BASE_URL}/api/auth/logout`, {}, {withCredentials:true})
+  axios.post(`https://server-for-first-automated.onrender.com/api/auth/logout`, {}, {withCredentials:true})
   .then(() => {
       localStorage.removeItem('userRole')
       localStorage.removeItem('userName')

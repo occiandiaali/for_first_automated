@@ -257,7 +257,7 @@ const formattedDate = readyDate.toLocaleDateString('en-US', { weekday: 'short', 
   }
 
    try {
-    const response = await axios.post(`${process.env.VUE_APP_API_BASE_URL}/api/user/storefront`, order, {withCredentials:true});
+    const response = await axios.post(`https://server-for-first-automated.onrender.com/api/user/storefront`, order, {withCredentials:true});
     console.log("New Order booked: ", response.data);
     reset();
     location.reload();

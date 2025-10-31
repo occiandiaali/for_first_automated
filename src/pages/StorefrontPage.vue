@@ -146,7 +146,7 @@ pickupPoint: string;
 totalDue: number
 }
 
-const api = `${process.env.VUE_APP_API_BASE_URL}/api/user/storefront`;
+const api = `https://server-for-first-automated.onrender.com/api/user/storefront`;
 
 const row1 = ref<OrderItem[]>([]);
 

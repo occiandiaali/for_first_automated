@@ -118,7 +118,7 @@ function addToRow() {
           itemPrice: price,
           checked: false
         }
-        axios.post(`${process.env.VUE_APP_API_BASE_URL}/api/admin/items`, newItem)
+        axios.post(`https://server-for-first-automated.onrender.com/api/admin/items`, newItem)
         .then(response => {
           console.log('New item saved: ', response.data);
           showDialog.value = false;
@@ -132,7 +132,7 @@ function addToRow() {
 
   async function updateItem(name:string, price:number, id:string) {
     try {
-        await axios.put(`${process.env.VUE_APP_API_BASE_URL}/api/admin/items/${id}`, 
+        await axios.put(`https://server-for-first-automated.onrender.com/api/admin/items/${id}`, 
     {
       itemName: name,
       itemPrice: price
