@@ -101,7 +101,7 @@ async function onSubmit () {
     // const response = await axios.post('http://localhost:3000/api/auth/login', theUser, {
     //   withCredentials: true // ✅ Send cookies
     // });
-       const response = await axios.post(`${process.env.VUE_APP_API_BASE_URL}/api/auth/login`, theUser, {
+       const response = await axios.post(`https://server-for-first-automated.onrender.com/api/auth/login`, theUser, {
       withCredentials: true // ✅ Send cookies
     });
 
