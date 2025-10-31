@@ -74,7 +74,7 @@
                 <q-list>
                   <q-item class="item-card">
         <q-item-section>
-          <q-item-label><strong>Oct 25</strong></q-item-label>
+          <q-item-label><strong>Dec 25</strong></q-item-label>
           <q-item-label caption>2:00 PM</q-item-label>
           <q-item-label>Pastor Chris</q-item-label>
           <q-item-label caption>Secondary line text. Lorem ipsum dolor sit amet, consectetur adipiscit elit.</q-item-label>
@@ -91,7 +91,7 @@
       </q-item>
                         <q-item class="item-card">
         <q-item-section>
-          <q-item-label><strong>Oct 26</strong></q-item-label>
+          <q-item-label><strong>Dec 26</strong></q-item-label>
           <q-item-label caption>8:00 AM</q-item-label>
           <q-item-label>Mrs. Ofili</q-item-label>
           <q-item-label caption>Secondary line text. Lorem ipsum dolor sit amet, consectetur adipiscit elit.</q-item-label>

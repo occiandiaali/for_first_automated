@@ -76,11 +76,12 @@ export function useArchives() {
     loading.value = true;
     try {
       const response = await axios.get<ArchivedItem[]>('http://localhost:3000/api/admin/archive', {withCredentials:true});
+
       let total = 0;
       let h = 0;
       let s = 0;
       items.value = response.data;
-          items.value.forEach(v => {
+      items.value.forEach(v => {
       if (v.title === monthName) {
       //  monthTotal.push(v.content.totalDue)
       total += v.content.totalDue;
