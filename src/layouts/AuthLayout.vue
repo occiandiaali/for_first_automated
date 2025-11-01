@@ -1,5 +1,5 @@
 <template>
-  <div class="q-pa-md" style="max-width: 500px;margin: 6% auto;background-color: orange;">
+  <div class="q-pa-md" style="max-width: 460px;margin: 10% auto;background-color: orange;">
     <q-item>
       <q-item-section>
         <q-item-label>1st Automated</q-item-label>
@@ -64,8 +64,10 @@
       <!-- <q-toggle v-model="accept" label="I accept the license and terms" /> -->
 
       <div>
-        <q-btn :label="`${submitting ? 'Wait..' : 'Submit'}`" type="submit" color="secondary"/>
+        <q-btn :label="`${submitting ? 'Please wait..' : 'Submit'}`" type="submit" color="teal"/>
         <q-btn label="Reset" type="reset" color="danger" flat class="q-ml-sm" />
+        <q-item-label v-if="reachServer" style="color: white;margin-top: 4px;">Trying to reach the server..</q-item-label>
+        <q-item-label v-if="netProb" style="color: red;">There may be a problem with the network.</q-item-label>
       </div>
     </q-form>
 
@@ -79,6 +81,11 @@ import { useRouter } from 'vue-router'
 import axios from 'axios'
 import { storeUserId, storeUsername, storeUserRole } from 'src/helpers/auth'
 
+const netProb = ref(false);
+const netPro = ref()
+const reachServer = ref(false)
+const reachTO = ref()
+
 //const $q = useQuasar()
 const router = useRouter();
 
@@ -89,9 +96,25 @@ const email = ref(null)
 const password = ref(null)
 //const role = ref(null)
 //const accept = ref(false)
+
+function networkSimul() {
+  if (submitting.value) {
+    reachTO.value = setTimeout(() => {
+    reachServer.value = true;
+  }, 3000);
+    netPro.value = setTimeout(() => {
+    netProb.value = true;
+  }, 6000);
+  } else {
+    clearTimeout(reachTO.value)
+    clearTimeout(netPro.value)
+  }
+}
 async function onSubmit () {
+
   try {
     submitting.value = true;
+    networkSimul()
 
     const theUser = {
       email: email.value,
