@@ -36,8 +36,14 @@ const routes: RouteRecordRaw[] = [
         component: () => import('pages/ItemsPage.vue'),
         meta: { requiresAuth: true, roles: ['admin'] },
       },
+      {
+        path: '/help',
+        component: () => import('pages/HelpPage.vue'),
+        meta: { requiresAuth: true, roles: ['admin', 'sales', 'user'] },
+      },
     ],
   },
+
   {
     path: '/login',
     component: () => import('layouts/AuthLayout.vue'),

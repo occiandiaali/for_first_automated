@@ -130,13 +130,14 @@ const menuList = [
     isActive: false
   },
 
-  // {
-  //   icon: 'help',
-  //   iconColor: 'primary',
-  //   label: 'Help',
-  //    roles: ['admin', 'sales', 'user'],
-  //   separator: false
-  // },
+  {
+    icon: 'help',
+    iconColor: 'primary',
+    label: 'Help',
+    route: '/help',
+    roles: ['admin', 'sales', 'user'],
+    separator: false
+  },
   {
     icon: 'logout',
     label: 'LogOut',
