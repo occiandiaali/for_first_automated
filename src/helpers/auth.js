@@ -1,7 +1,7 @@
 import { useRouter } from "vue-router";
 import axios from "axios";
 
-const router = useRouter();
+//const router = useRouter();
 
 export function getUserId() {
     return localStorage.getItem('userId');
@@ -41,6 +41,7 @@ export function getUserPic() {
 }
 
 export function logoutUser() {
+    const router = useRouter();
   axios.post(`https://server-for-first-automated.onrender.com/api/auth/logout`, {}, {withCredentials:true})
   .then(() => {
       localStorage.removeItem('userRole')

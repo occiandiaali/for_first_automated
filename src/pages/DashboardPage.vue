@@ -38,82 +38,50 @@
     </div>
     <!---->
    
-        <!-- <q-item>
-                    <q-item-section side top>
-                        <q-item-label style="font-size: large;">0</q-item-label>
-                        <q-item-label><strong>Remaining Today</strong></q-item-label>
-          <q-item-label caption>Next Delivery 10/21</q-item-label>
-          
-        </q-item-section>
-        </q-item>
-                <q-item>
-                    <q-item-section side top>
-                        <q-item-label style="font-size: large;">112</q-item-label>
-                        <q-item-label><strong>New</strong></q-item-label>
-          <q-item-label caption>Last just added</q-item-label>
-         
-        </q-item-section>
-        </q-item>
-                <q-item>
-                    <q-item-section side top>
-                        <q-item-label style="font-size: large;">2</q-item-label>
-                        <q-item-label><strong>Tomorrow</strong></q-item-label>
-          <q-item-label caption>First Delivery 09:45</q-item-label>
-      
-        </q-item-section>
-        </q-item> -->
-        <q-item-label caption v-if="items">Top customers for {{ monthName }}</q-item-label>
-        <q-item-label caption v-else>No customers for {{ monthName }}</q-item-label>
-   <div class="q-pa-md" v-if="loading">Getting data..</div>
-   <div class="q-pa-md" v-else-if="error">{{ error }}</div>
-   
-   <div v-else class="summary-row">
-    <q-list v-for="item in items" :key="item.content.orderNo" class="q-my-sm" bordered>
-      <q-item  v-if="item.content.garments.length >= 5">
-                <q-item-section avatar>
-          <q-avatar color="orange" text-color="white">
+
+        <q-separator/>
+        <div style="max-width: 250px;text-align: center;">
+        <q-item-label v-if="items" class="q-pa-sm">Top customer(s) for {{ monthName }}</q-item-label>
+        
+        <div class="row q-pa-md">
+          <div class="q-pa-md" v-if="loading">Getting data..</div>
+          <div class="q-pa-md" v-else-if="error">{{ error }}</div>
+          <div class="col-6" v-for="item in items" :key="item.content.orderNo">
+
+      <q-btn v-if="(item.title === monthName) && item.content.garments.length >= 3" color="teal-5" :label="item.content.customer" size="sm" style="margin: 4px;">
+        <q-menu>
+          <div class="row no-wrap q-pa-md">
+
+          <div class="column items-center">
+          <q-avatar color="orange" text-color="white" size="md">
             {{ item.content.customer.substring(0,1) }}
           </q-avatar>
-        </q-item-section>
-        <q-item-section>
-          <q-item-label>{{ item.content.customer }}</q-item-label>
-          <q-item-label caption>{{ item.content.garments.length }}</q-item-label>
-        </q-item-section>
 
-                <q-item-section side>
-          <q-icon name="phone" color="green" />
-        </q-item-section>
-      </q-item>
-      <!--  -->
-    </q-list>
-   
-      <!-- <div v-for="a in items" :key="a.content.orderNo">
-        <div v-if="a.content.garments.length >= 3">
-          <div class="top-customer-div">
-          <span id="topCustomerHeading">Top customer</span>
-        
-          <span id="garmentsLen">{{ a.content.garments.length}}</span>
-          <span id="customerName">{{ a.content.customer}}</span>
-          <span id="customerPhone">&#128222; {{ a.content.phone }}</span>
+            <div class="text-subtitle3 q-mt-md q-mb-xs">{{ item.content.customer }}</div>
+            <q-item-label style="font-size: x-large;">{{ item.content.garments.length }}</q-item-label>
+            <q-item-label caption class="q-pa-sm"><q-icon name="phone" color="green" /> {{ item.content.phone }}</q-item-label>
+
+            <q-btn
+              color="secondary"
+              icon="mail"
+              label="Message"
+              push
+              size="sm"
+              v-close-popup
+            />
           </div>
-        </div>
-      </div> -->
-            <!-- <q-item v-for="a in items" :key="a.content.orderNo"  style="max-width: 250px;text-align: center;">
-        <q-item-section v-if="a.content.garments.length >= 3">
-          <q-item-label overline>Top customer</q-item-label>
-        
-          <q-item-label id="garments-len">{{ a.content.garments.length }}</q-item-label>
-          <q-item-label id="customerName">{{  a.content.customer }}</q-item-label>
-          <q-item-label caption>&#128222; {{ a.content.phone }}</q-item-label>
-        </q-item-section>
-      </q-item> -->
-    
+          </div>
+        </q-menu>
+      </q-btn>
+      
+    </div>
    </div>
- 
+   </div> <!--wrapper-->
+   <q-separator/>
 
   <div class="q-pa-sm chart-row">
   <div class="q-pa-md chart-div">
-    <Line v-if="!loading && thisMonthTotalSales" :data="data" :options="lineOptions">Chart could not load</Line>
+    <Line v-if="!loading" :data="data" :options="lineOptions">Chart could not load</Line>
     <div v-else class="q-pa-md">Trying to load payments data..</div>
   </div>
     <div class="q-pa-md chart-div">
@@ -154,25 +122,30 @@ ChartJS.register(
 )
 
 
-const {items, monthName, sumTotal, home, store, loading, error} = useArchives();
-
-//  console.log("MonthTotal: ", monthName)
-//   console.log("SumTotal: ", sumTotal.value)
+const {items, monthName, sumTotal, home, store, loading, error, revenueByMonth} = useArchives();
 
 const monthLabels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
-let thisMonthTotalSales:number[] = new Array(monthLabels.length).fill(0);
-  monthLabels.forEach((i) => {
-  const idx = monthLabels.indexOf(i);
-  if (i === monthName) {
-    thisMonthTotalSales.splice(idx, 0, sumTotal.value)
-    localStorage.setItem('thisMonthTotalSales', JSON.stringify(thisMonthTotalSales))
-  }
-})
+//let thisMonthTotalSales:number[] = new Array(monthLabels.length).fill(0);
+const totalSales: number[] = [];
+
+//console.log(revenueByMonth.value)
+//   monthLabels.forEach((i) => {
+//   const idx = monthLabels.indexOf(i);
+//   if (i === monthName) {
+//     thisMonthTotalSales.splice(idx, 0, sumTotal.value)
+//     localStorage.setItem('thisMonthTotalSales', JSON.stringify(thisMonthTotalSales))
+//   }
+// })
   // name: String,
   // price: Number,
   // amt: Number,
   // subTotal: Number,
+
+revenueByMonth.value.forEach(rev => {
+
+  totalSales.push(rev.revenue)
+})  
 
 //const res = ref<{name:string,price:number,amt:number,subTotal:number}[]>([])
 
@@ -185,7 +158,7 @@ const data = {
     {
       label: 'Monthly revenue',
       backgroundColor: '#00ff00',//'#f87979',
-      data: thisMonthTotalSales,//[400, 39, 100, 40, 39, 80, 240, 0, 0, total.value, 0, 0]
+      data: totalSales,//thisMonthTotalSales,//[400, 39, 100, 40, 39, 80, 240, 0, 0, total.value, 0, 0]
       borderColor: 'rgb(75, 192, 192)',
       tension: 0.1
     }
@@ -226,10 +199,18 @@ const options = {
 // const customerItems = ref(items)
 // const topCustomerColumns: unknown[] = []
 
-onMounted(() => {
-  const data:number[] = JSON.parse(localStorage.getItem("thisMonthTotalSales") || "[]")
-  thisMonthTotalSales = data;
 
+onMounted(() => {
+//   const allRev:number[] = JSON.parse(localStorage.getItem("annualRev") || "[]")
+//   totalSales = allRev;
+//   console.log("Total Sales+++");
+// console.log(totalSales);
+  // const data:number[] = JSON.parse(localStorage.getItem("thisMonthTotalSales") || "[]")
+  // thisMonthTotalSales = data;
+  // const strAnnuity = JSON.parse(localStorage.getItem("annualRev") || "[]")
+  // Object.values(strAnnuity).forEach(value => {
+  //   console.log(value)
+  // })
 })
 
 </script>

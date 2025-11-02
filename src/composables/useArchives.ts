@@ -12,6 +12,11 @@ import axios from 'axios';
 // }
 type GarmentType = [string, number, number, number];
 
+interface MonthlyRevenue {
+  month: string;
+  revenue: number;
+}
+
 interface ArchiveContent {
   orderNo: string;
   customer: string;
@@ -50,6 +55,10 @@ interface ArchivedItem {
   const home = ref(0)
   const store = ref(0)
 
+  const revenueByMonth = ref<MonthlyRevenue[]>([])
+  //const allRevenue:number[] = [];
+  const ocTotal = ref(0)
+
 /**
  * _id:68fb71d580f5cd054c578e09
 orderNo:"d3swmtqer1"
@@ -84,29 +93,50 @@ export function useArchives() {
       let s = 0;
       items.value = response.data;
       items.value.forEach(v => {
-      if (v.title === monthName) {
+    if (v.title === monthName) {
       //  monthTotal.push(v.content.totalDue)
       total += v.content.totalDue;
+      //revenueByMonth.value.push({month: monthName, revenue: v.content.totalDue})
       if (v.content.pickupPoint === "Home") {
         h += 1
       } else {
         s += 1
       }
-    }
+    } else if (v.title === 'Oct') {
+      ocTotal.value = v.content.totalDue
+    } 
   })
   sumTotal.value = total
+
+  monthNames.forEach(m => {
+    if (m === 'Oct') {
+      revenueByMonth.value.push({month: 'Oct', revenue: ocTotal.value})
+    } else if (m === monthName) {
+      revenueByMonth.value.push({month: monthName, revenue: sumTotal.value})
+    } else {
+      revenueByMonth.value.push({month: m, revenue: 0})
+    }
+  })
   home.value = h;
   store.value = s;
-   // console.log("useArchives arr ",monthTotal)
-    } catch (err) {
-      error.value = 'Failed to fetch archived items';
-      console.error(err)
-    } finally {
-      loading.value = false;
-    }
-  };
+//   revenueByMonth.value.forEach(v => {
+//   console.log(v.revenue)
+//   allRevenue.push(v.revenue);
+// })
+ // localStorage.setItem('annualRev', JSON.stringify(allRevenue));
+  //  console.log("useArchives arr ",allRevenue)
+} catch (err) {
+  error.value = 'Failed to fetch archived items';
+  console.error(err)
+} finally {
+  loading.value = false;
+}
+};
 
-  onMounted(fetchArchivedItems);
+// console.log("RevByMonth====")
+// console.log(revenueByMonth.value)
 
-  return { items, monthName, sumTotal, home, store, loading, error };
+onMounted(fetchArchivedItems);
+
+  return { items, monthName, sumTotal, home, store, loading, error, revenueByMonth };
 }

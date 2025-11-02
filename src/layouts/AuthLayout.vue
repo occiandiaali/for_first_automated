@@ -101,10 +101,10 @@ function networkSimul() {
   if (submitting.value) {
     reachTO.value = setTimeout(() => {
     reachServer.value = true;
-  }, 3000);
+  }, 5000);
     netPro.value = setTimeout(() => {
     netProb.value = true;
-  }, 6000);
+  }, 10000);
   } else {
     clearTimeout(reachTO.value)
     clearTimeout(netPro.value)
