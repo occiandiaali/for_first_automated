@@ -151,16 +151,12 @@ const proceedToDel = ref(false)
 async function postToArchive(id:string|undefined) {
  // alert("Sending document to Archive...")
  try {
-  await axios.post(`https://server-for-first-automated.onrender.com/api/user/archive`, { itemId: id }, {withCredentials:true})
-  .then(response => {
+  const response = await axios.post(`https://server-for-first-automated.onrender.com/api/user/archive`, { itemId: id }, {withCredentials:true})
+
     if (response.status === 200 || response.status === 201) {
       proceedToDel.value = true;
       console.log('Item archived:', response.data);
     }
-  })
-  .catch(error => {
-    console.error('AxiosPost Error archiving item:', error);
-  });
 
  } catch (error) {
     console.error('TryCatch Error archiving item:', error);

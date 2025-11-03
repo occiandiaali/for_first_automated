@@ -93,7 +93,7 @@
 </template>
 
 <script setup lang="ts">
-import { onBeforeMount, onMounted } from 'vue';
+import {  onMounted } from 'vue';
 import axios from 'axios';
 import { useArchives } from 'src/composables/useArchives';
 import {
@@ -204,7 +204,6 @@ const options = {
 }
 // const customerItems = ref(items)
 // const topCustomerColumns: unknown[] = []
-
 function putMonthlyRevenues() {
     axios.post('https://server-for-first-automated.onrender.com/api/admin/year-revenue', monthlyTotals)
   .then(response => {
@@ -212,28 +211,23 @@ function putMonthlyRevenues() {
   }).catch(e => console.error(e))
 }
 
-function getAnnualRevenuesArray() {
-  axios.get('https://server-for-first-automated.onrender.com/api/admin/year-revenue')
-  .then(response => {
-    if (response) {
+// function getAnnualRevenuesArray() {
+//   axios.get('https://server-for-first-automated.onrender.com/api/admin/year-revenue')
+//   .then(response => {
+//     if (response) {
    
 
-      console.log(response.data);
+//       console.log(response.data);
 
-  } else {
-    console.log("No response from '/year-revenue'...")
-  }
-  }).catch(e => console.error(e))
-}
-
-onBeforeMount(() => {
-  putMonthlyRevenues()
-})
-
+//   } else {
+//     console.log("No response from '/year-revenue'...")
+//   }
+//   }).catch(e => console.error(e))
+// }
 
 onMounted(() => {
-
- getAnnualRevenuesArray(); 
+putMonthlyRevenues();
+// getAnnualRevenuesArray(); 
 //   const allRev:number[] = JSON.parse(localStorage.getItem("annualRev") || "[]")
 //   totalSales = allRev;
 //   console.log("Total Sales+++");
