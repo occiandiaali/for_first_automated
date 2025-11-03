@@ -2,11 +2,13 @@
   <div class="q-pa-md" style="max-width: 460px;margin: 10% auto;background-color: orange;">
     <q-item>
       <q-item-section>
-        <q-item-label>1st Automated</q-item-label>
-        <q-item-label caption>Laundry & Dry-cleaners</q-item-label>
+        <q-item-label style="font-size: x-large;">1st Automated</q-item-label>
+        <q-item-label caption>Laundry & dry-cleaning</q-item-label>
       </q-item-section>
     </q-item>
-    <h5>Login</h5>
+    <br/>
+    <q-separator />
+    <!-- <h6 style="text-align: center;">Login</h6> -->
     <q-form
       @submit="onSubmit"
       @reset="onReset"

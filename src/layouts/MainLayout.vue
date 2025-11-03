@@ -9,7 +9,7 @@
         <q-toolbar-title>
           1st Automated
           <q-item-label style="color: lightblue;" caption>
-            Laundry & Dry-cleaners
+            Laundry & dry-cleaning
             <span style="color: white;">{{ onlineStatus }}</span>
           </q-item-label>
         </q-toolbar-title>

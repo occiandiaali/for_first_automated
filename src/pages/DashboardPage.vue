@@ -94,6 +94,7 @@
 
 <script setup lang="ts">
 import { onMounted } from 'vue';
+import axios from 'axios';
 import { useArchives } from 'src/composables/useArchives';
 import {
   Chart as ChartJS,
@@ -122,12 +123,12 @@ ChartJS.register(
 )
 
 
-const {items, monthName, sumTotal, home, store, loading, error, revenueByMonth} = useArchives();
+const {items, monthName, sumTotal, home, store, loading, error} = useArchives();
 
 const monthLabels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
 //let thisMonthTotalSales:number[] = new Array(monthLabels.length).fill(0);
-const totalSales: number[] = [];
+let totalSales: number[] = [];
 
 //console.log(revenueByMonth.value)
 //   monthLabels.forEach((i) => {
@@ -142,10 +143,10 @@ const totalSales: number[] = [];
   // amt: Number,
   // subTotal: Number,
 
-revenueByMonth.value.forEach(rev => {
+// revenueByMonth.value.forEach(rev => {
 
-  totalSales.push(rev.revenue)
-})  
+//   totalSales.push(rev.revenue)
+// })  
 
 //const res = ref<{name:string,price:number,amt:number,subTotal:number}[]>([])
 
@@ -199,8 +200,19 @@ const options = {
 // const customerItems = ref(items)
 // const topCustomerColumns: unknown[] = []
 
+function getAnnualRevenuesArray() {
+  axios.get('http://localhost:3000/api/admin/year-revenue')
+  .then(response => {
+    console.log("GetResp ", response.data);
+    if (response.data.year === new Date().getFullYear()) {
+      totalSales = response.data.revenueArray
+    }
+  }).catch(e => console.error(e))
+}
+
 
 onMounted(() => {
+ getAnnualRevenuesArray(); 
 //   const allRev:number[] = JSON.parse(localStorage.getItem("annualRev") || "[]")
 //   totalSales = allRev;
 //   console.log("Total Sales+++");
