@@ -93,7 +93,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, watch } from 'vue';
+import { onBeforeMount, onMounted, watch } from 'vue';
 import axios from 'axios';
 import { useArchives } from 'src/composables/useArchives';
 import {
@@ -130,10 +130,10 @@ const monthLabels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Se
 //let thisMonthTotalSales:number[] = new Array(monthLabels.length).fill(0);
 const totalSalesByMonth: number[] = monthlyTotals;
 
-watch(sumTotal, (newVal, oldVal) => {
-  console.log(`Revenue from ${oldVal} to ${newVal}`);
-  putMonthlyRevenues();
-})
+// watch(sumTotal, (newVal, oldVal) => {
+//   console.log(`Revenue from ${oldVal} to ${newVal}`);
+//   putMonthlyRevenues();
+// })
 
 //console.log(revenueByMonth.value)
 //   monthLabels.forEach((i) => {
@@ -225,6 +225,10 @@ function getAnnualRevenuesArray() {
   }
   }).catch(e => console.error(e))
 }
+
+onBeforeMount(() => {
+  putMonthlyRevenues()
+})
 
 
 onMounted(() => {
