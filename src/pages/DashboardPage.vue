@@ -203,8 +203,9 @@ const options = {
 function getAnnualRevenuesArray() {
   axios.get('https://server-for-first-automated.onrender.com/api/admin/year-revenue')
   .then(response => {
-    console.log("GetResp ", response.data);
-    if (response.data.year === new Date().getFullYear()) {
+    console.log("GetRespYear ", response.data.year);
+    console.log("GetRespData ", response.data.revenueArray);
+    if (response.data.year === new Date().getFullYear().toString()) {
       totalSales = response.data.revenueArray
     }
   }).catch(e => console.error(e))
