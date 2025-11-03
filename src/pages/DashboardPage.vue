@@ -132,7 +132,7 @@ const totalSalesByMonth: number[] = monthlyTotals;
 
 watch(sumTotal, (newVal, oldVal) => {
   console.log(`Revenue from ${oldVal} to ${newVal}`);
- // postMonthlyRevenues();
+  putMonthlyRevenues();
 })
 
 //console.log(revenueByMonth.value)
@@ -205,12 +205,12 @@ const options = {
 // const customerItems = ref(items)
 // const topCustomerColumns: unknown[] = []
 
-// function postMonthlyRevenues() {
-//     axios.post('https://server-for-first-automated.onrender.com/api/admin/year-revenue', monthlyTotals)
-//   .then(response => {
-//     console.log("Posted Month total array ", response.data)
-//   }).catch(e => console.error(e))
-// }
+function putMonthlyRevenues() {
+    axios.post('https://server-for-first-automated.onrender.com/api/admin/year-revenue', monthlyTotals)
+  .then(response => {
+    console.log("Posted Month total ", response.data)
+  }).catch(e => console.error(e))
+}
 
 function getAnnualRevenuesArray() {
   axios.get('https://server-for-first-automated.onrender.com/api/admin/year-revenue')

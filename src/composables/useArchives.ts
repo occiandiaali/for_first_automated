@@ -76,12 +76,12 @@ pickupPoint:"Store"
  */
 
 
+const monthlyTotals: number[] = new Array(monthNames.length - 1).fill(0);
 
 export function useArchives() {
   const items = ref<ArchivedItem[]>([]);
   const loading = ref(false);
   const error = ref<string | null>(null);
-  const monthlyTotals: number[] = new Array(monthNames.length - 1).fill(0);
 
 
   const fetchArchivedItems = async () => {
