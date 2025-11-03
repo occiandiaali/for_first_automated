@@ -93,7 +93,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted } from 'vue';
+import { onMounted, watch } from 'vue';
 import axios from 'axios';
 import { useArchives } from 'src/composables/useArchives';
 import {
@@ -128,7 +128,12 @@ const {items, monthName, sumTotal, home, store, loading, error, monthlyTotals} =
 const monthLabels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
 //let thisMonthTotalSales:number[] = new Array(monthLabels.length).fill(0);
-let totalSales: number[] = [];
+let totalSalesByMonth: number[] = monthlyTotals;
+
+watch(sumTotal, (newVal, oldVal) => {
+  console.log(`Revenue from ${oldVal} to ${newVal}`);
+ // postMonthlyRevenues();
+})
 
 //console.log(revenueByMonth.value)
 //   monthLabels.forEach((i) => {
@@ -159,7 +164,7 @@ const data = {
     {
       label: 'Monthly revenue',
       backgroundColor: '#00ff00',//'#f87979',
-      data: totalSales,//thisMonthTotalSales,//[400, 39, 100, 40, 39, 80, 240, 0, 0, total.value, 0, 0]
+      data: totalSalesByMonth,//thisMonthTotalSales,//[400, 39, 100, 40, 39, 80, 240, 0, 0, total.value, 0, 0]
       borderColor: 'rgb(75, 192, 192)',
       tension: 0.1
     }
@@ -200,29 +205,30 @@ const options = {
 // const customerItems = ref(items)
 // const topCustomerColumns: unknown[] = []
 
-function postMonthlyRevenues() {
-    axios.post('https://server-for-first-automated.onrender.com/api/admin/year-revenue', monthlyTotals, {withCredentials:true})
-  .then(response => {
-    console.log("Posted Month total array ", response.data)
-  }).catch(e => console.error(e))
-}
+// function postMonthlyRevenues() {
+//     axios.post('https://server-for-first-automated.onrender.com/api/admin/year-revenue', monthlyTotals)
+//   .then(response => {
+//     console.log("Posted Month total array ", response.data)
+//   }).catch(e => console.error(e))
+// }
 
 function getAnnualRevenuesArray() {
   axios.get('https://server-for-first-automated.onrender.com/api/admin/year-revenue')
   .then(response => {
-    console.log("GetResp ", response.data);
-    console.log("GetRespYear ", response.data.year);
-    console.log("GetRespData ", response.data.revenueArray);
-    if (response.data.year === new Date().getFullYear().toString()) {
-      totalSales = response.data.revenueArray
-      console.log("totalSalse ", totalSales)
-    }
+    if (response) {
+    Object.entries(response.data).forEach((k,v) => {
+
+      console.log(`${k}: ${v}`);
+    })
+  } else {
+    console.log("No response from '/year-revenue'...")
+  }
   }).catch(e => console.error(e))
 }
 
 
 onMounted(() => {
- postMonthlyRevenues();
+
  getAnnualRevenuesArray(); 
 //   const allRev:number[] = JSON.parse(localStorage.getItem("annualRev") || "[]")
 //   totalSales = allRev;
