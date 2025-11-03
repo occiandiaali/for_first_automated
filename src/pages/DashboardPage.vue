@@ -93,8 +93,6 @@
 </template>
 
 <script setup lang="ts">
-import {  onMounted } from 'vue';
-import axios from 'axios';
 import { useArchives } from 'src/composables/useArchives';
 import {
   Chart as ChartJS,
@@ -202,43 +200,6 @@ const options = {
     }
   }
 }
-// const customerItems = ref(items)
-// const topCustomerColumns: unknown[] = []
-function putMonthlyRevenues() {
-    axios.post('https://server-for-first-automated.onrender.com/api/admin/year-revenue', monthlyTotals)
-  .then(response => {
-    console.log("Posted Month total ", response.data)
-  }).catch(e => console.error(e))
-}
-
-// function getAnnualRevenuesArray() {
-//   axios.get('https://server-for-first-automated.onrender.com/api/admin/year-revenue')
-//   .then(response => {
-//     if (response) {
-   
-
-//       console.log(response.data);
-
-//   } else {
-//     console.log("No response from '/year-revenue'...")
-//   }
-//   }).catch(e => console.error(e))
-// }
-
-onMounted(() => {
-putMonthlyRevenues();
-// getAnnualRevenuesArray(); 
-//   const allRev:number[] = JSON.parse(localStorage.getItem("annualRev") || "[]")
-//   totalSales = allRev;
-//   console.log("Total Sales+++");
-// console.log(totalSales);
-  // const data:number[] = JSON.parse(localStorage.getItem("thisMonthTotalSales") || "[]")
-  // thisMonthTotalSales = data;
-  // const strAnnuity = JSON.parse(localStorage.getItem("annualRev") || "[]")
-  // Object.values(strAnnuity).forEach(value => {
-  //   console.log(value)
-  // })
-})
 
 </script>
 

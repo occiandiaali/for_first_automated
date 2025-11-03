@@ -76,7 +76,14 @@ pickupPoint:"Store"
  */
 
 
-const monthlyTotals: number[] = new Array(monthNames.length - 1).fill(0);
+let monthlyTotals: number[];
+
+function putMonthlyRevenues(m:number[]) {
+    axios.post('https://server-for-first-automated.onrender.com/api/admin/year-revenue', m)
+  .then(response => {
+    console.log("Posted Month total ", response.data)
+  }).catch(e => console.error(e))
+}
 
 export function useArchives() {
   const items = ref<ArchivedItem[]>([]);
@@ -90,7 +97,11 @@ export function useArchives() {
       //https://server-for-first-automated.onrender.com
      // const response = await axios.get<ArchivedItem[]>('http://localhost:3000/api/admin/archive', {withCredentials:true});
       const response = await axios.get<ArchivedItem[]>(`https://server-for-first-automated.onrender.com/api/admin/archive`, {withCredentials:true});
-
+      const yearRev = await axios.get('https://server-for-first-automated.onrender.com/api/admin/year-revenue', {withCredentials: true});
+      console.log("YearRevData", yearRev.data);
+      if (yearRev.data.revenueArray.length === 0) {
+        monthlyTotals = new Array(monthNames.length - 1).fill(0);
+      }
       let total = 0;
       let h = 0;
       let s = 0;
@@ -116,6 +127,7 @@ export function useArchives() {
   monthlyTotals.splice(monthIndex.value, 0, sumTotal.value) // axios post this array to '/monthly-revenue'
   console.log("monthlyTotals Array=====");
   console.log(monthlyTotals);
+  putMonthlyRevenues(monthlyTotals)
 
   // monthNames.forEach(m => {
   //   if (m === 'Oct') {
