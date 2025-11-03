@@ -93,7 +93,7 @@
 </template>
 
 <script setup lang="ts">
-import { onBeforeMount, onMounted, watch } from 'vue';
+import { onBeforeMount, onMounted } from 'vue';
 import axios from 'axios';
 import { useArchives } from 'src/composables/useArchives';
 import {
