@@ -216,10 +216,10 @@ function getAnnualRevenuesArray() {
   axios.get('https://server-for-first-automated.onrender.com/api/admin/year-revenue')
   .then(response => {
     if (response) {
-    Object.entries(response.data).forEach(([k,v]) => {
+   
 
-      console.log(`${k}: ${v}`);
-    })
+      console.log(response.data);
+
   } else {
     console.log("No response from '/year-revenue'...")
   }
