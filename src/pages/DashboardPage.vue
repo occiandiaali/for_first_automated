@@ -123,7 +123,7 @@ ChartJS.register(
 )
 
 
-const {items, monthName, sumTotal, home, store, loading, error} = useArchives();
+const {items, monthName, sumTotal, home, store, loading, error, monthlyTotals} = useArchives();
 
 const monthLabels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
@@ -200,6 +200,13 @@ const options = {
 // const customerItems = ref(items)
 // const topCustomerColumns: unknown[] = []
 
+function postMonthlyRevenues() {
+    axios.post('https://server-for-first-automated.onrender.com/api/admin/year-revenue', monthlyTotals, {withCredentials:true})
+  .then(response => {
+    console.log("Posted Month total array ", response.data)
+  }).catch(e => console.error(e))
+}
+
 function getAnnualRevenuesArray() {
   axios.get('https://server-for-first-automated.onrender.com/api/admin/year-revenue')
   .then(response => {
@@ -215,6 +222,7 @@ function getAnnualRevenuesArray() {
 
 
 onMounted(() => {
+ postMonthlyRevenues();
  getAnnualRevenuesArray(); 
 //   const allRev:number[] = JSON.parse(localStorage.getItem("annualRev") || "[]")
 //   totalSales = allRev;

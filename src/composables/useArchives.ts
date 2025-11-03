@@ -75,12 +75,7 @@ pickupPoint:"Store"
  * 
  */
 
-function postMonthlyRevenues(v:number[]) {
-    axios.post('https://server-for-first-automated.onrender.com/api/admin/year-revenue', v, {withCredentials:true})
-  .then(response => {
-    console.log("Posted Month total array ", response.data)
-  }).catch(e => console.error(e))
-}
+
 
 export function useArchives() {
   const items = ref<ArchivedItem[]>([]);
@@ -122,8 +117,6 @@ export function useArchives() {
   console.log("monthlyTotals Array=====");
   console.log(monthlyTotals);
 
-  postMonthlyRevenues(monthlyTotals);
-
   // monthNames.forEach(m => {
   //   if (m === 'Oct') {
   //     revenueByMonth.value.push({month: 'Oct', revenue: ocTotal.value})
@@ -154,5 +147,5 @@ export function useArchives() {
 
 onMounted(fetchArchivedItems);
 
-  return { items, monthName, sumTotal, home, store, loading, error };
+  return { items, monthName, sumTotal, home, store, loading, error, monthlyTotals };
 }
