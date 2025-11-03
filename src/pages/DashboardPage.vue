@@ -128,7 +128,7 @@ const {items, monthName, sumTotal, home, store, loading, error, monthlyTotals} =
 const monthLabels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
 //let thisMonthTotalSales:number[] = new Array(monthLabels.length).fill(0);
-let totalSalesByMonth: number[] = monthlyTotals;
+const totalSalesByMonth: number[] = monthlyTotals;
 
 watch(sumTotal, (newVal, oldVal) => {
   console.log(`Revenue from ${oldVal} to ${newVal}`);
@@ -216,7 +216,7 @@ function getAnnualRevenuesArray() {
   axios.get('https://server-for-first-automated.onrender.com/api/admin/year-revenue')
   .then(response => {
     if (response) {
-    Object.entries(response.data).forEach((k,v) => {
+    Object.entries(response.data).forEach(([k,v]) => {
 
       console.log(`${k}: ${v}`);
     })
