@@ -201,7 +201,7 @@ const options = {
 // const topCustomerColumns: unknown[] = []
 
 function getAnnualRevenuesArray() {
-  axios.get('http://localhost:3000/api/admin/year-revenue')
+  axios.get('https://server-for-first-automated.onrender.com/api/admin/year-revenue')
   .then(response => {
     console.log("GetResp ", response.data);
     if (response.data.year === new Date().getFullYear()) {

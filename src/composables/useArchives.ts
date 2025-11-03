@@ -76,7 +76,7 @@ pickupPoint:"Store"
  */
 
 function postMonthlyRevenues(v:number[]) {
-    axios.post('http://localhost:3000/api/admin/year-revenue', v, {withCredentials:true})
+    axios.post('https://server-for-first-automated.onrender.com/api/admin/year-revenue', v, {withCredentials:true})
   .then(response => {
     console.log("Posted Month total array ", response.data)
   }).catch(e => console.error(e))
