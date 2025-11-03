@@ -66,7 +66,7 @@
       <!-- <q-toggle v-model="accept" label="I accept the license and terms" /> -->
 
       <div>
-        <q-btn :label="`${submitting ? 'Please wait..' : 'Submit'}`" type="submit" color="teal"/>
+        <q-btn :label="`${submitting ? 'Please wait..' : 'Login'}`" type="submit" color="teal"/>
         <q-btn label="Reset" type="reset" color="danger" flat class="q-ml-sm" />
         <q-item-label v-if="reachServer" style="color: white;margin-top: 4px;">Trying to reach the server..</q-item-label>
         <q-item-label v-if="netProb" style="color: red;">There may be a problem with the network.</q-item-label>
