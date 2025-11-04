@@ -40,15 +40,18 @@
    
 
         <q-separator/>
-        <div style="max-width: 250px;text-align: center;">
-        <q-item-label v-if="items" class="q-pa-sm">Top customer(s) for {{ monthName }}</q-item-label>
+        <div style="max-width: 320px;text-align: center;">
+        <!-- <q-item-label v-if="items" class="q-pa-sm">Top customer(s) for {{ monthName }}</q-item-label> -->
         
         <div class="row q-pa-md">
           <div class="q-pa-md" v-if="loading">Getting data..</div>
           <div class="q-pa-md" v-else-if="error">{{ error }}</div>
-          <div class="col-6" v-for="item in items" :key="item.content.orderNo">
-
-      <q-btn v-if="(item.title === monthName) && item.content.garments.length >= 3" color="teal-5" :label="item.content.customer" size="sm" style="margin: 4px;">
+          <div class="q-pa-md top-customer-div">
+          <Bar :data="barData" :options="barOptions" />
+          </div>
+          <!-- <div class="col-4" v-for="item in items" :key="item.content.orderNo">
+       <div v-if="(item.title === monthName) && item.content.garments.length >= 3">
+      <q-btn color="teal-5" :label="item.content.customer" size="sm" style="margin: 2px;">
         <q-menu>
           <div class="row no-wrap q-pa-md">
 
@@ -73,8 +76,9 @@
           </div>
         </q-menu>
       </q-btn>
+      </div>
       
-    </div>
+    </div> -->
    </div>
    </div> <!--wrapper-->
    <q-separator/>
@@ -82,11 +86,11 @@
   <div class="q-pa-sm chart-row">
   <div class="q-pa-md chart-div">
     <Line v-if="!loading" :data="data" :options="lineOptions">Chart could not load</Line>
-    <div v-else class="q-pa-md">Trying to load payments data..</div>
+    <div v-else class="q-pa-md">Looking for revenue data..</div>
   </div>
     <div class="q-pa-md chart-div">
     <Pie v-if="!loading && (home || store)" :data="pieData" :options="options">Chart could not load</Pie>
-    <div v-else class="q-pa-md">Trying to load Pick-up data..</div>
+    <div v-else class="q-pa-md">Looking for pick-up data..</div>
   </div>
 </div>
 </q-page>
@@ -94,9 +98,11 @@
 
 <script setup lang="ts">
 import { useArchives } from 'src/composables/useArchives';
+import axios from 'axios';
 import {
   Chart as ChartJS,
   ArcElement,
+  BarElement,
   CategoryScale,
   LinearScale,
   PointElement,
@@ -105,12 +111,13 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js'
-import { Line, Pie } from 'vue-chartjs'
+import { Bar, Line, Pie } from 'vue-chartjs'
 
 
 
 ChartJS.register(
   ArcElement,
+  BarElement,
   CategoryScale,
   LinearScale,
   PointElement,
@@ -121,12 +128,53 @@ ChartJS.register(
 )
 
 
-const {items, monthName, sumTotal, home, store, loading, error, monthlyTotals} = useArchives();
+const { monthName, sumTotal, home, store, loading, error, ByMonth, topCustomerName, topCustomerSpend} = useArchives();
 
 const monthLabels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
 //let thisMonthTotalSales:number[] = new Array(monthLabels.length).fill(0);
-const totalSalesByMonth: number[] = monthlyTotals;
+//const totalSalesByMonth: number[] = [];//monthlyTotals;
+
+  axios.post('https://server-for-first-automated.onrender.com/api/admin/yearly-revenue', {revenue: ByMonth}, {withCredentials:true})
+  // .then(response => {
+  //   console.log('Success: ', response.data)
+  // }).catch(e => console.error(e))
+  .catch(e => console.error(e.message))
+
+//console.log(monthlyTotals)
+// revenueByMonth.value.forEach(item => {
+//  // console.log("In Dash: ")
+//   totalSalesByMonth.push(item.revenue)
+//  // console.log(`${item.month}: ${item.revenue}`)
+// });
+
+// revenueByMonth.value.forEach(item => {
+//  // console.log("In Dash: ")
+//   totalSalesByMonth.push(item.revenue)
+//  // console.log(`${item.month}: ${item.revenue}`)
+// });
+
+const barData = {
+  labels: topCustomerName,
+  datasets: [{
+    label: 'Total spend',
+    backgroundColor: '#d4458a',
+    data: topCustomerSpend
+  }]
+}
+const barOptions = {
+  responsive: true,
+  maintainAspectRatio: false,
+    plugins: {
+    title: {
+      display: true,
+      text: 'Top customer(s) of the month'
+    }
+  }
+}
+
+
+
 
 // watch(sumTotal, (newVal, oldVal) => {
 //   console.log(`Revenue from ${oldVal} to ${newVal}`);
@@ -134,26 +182,8 @@ const totalSalesByMonth: number[] = monthlyTotals;
 // })
 
 //console.log(revenueByMonth.value)
-//   monthLabels.forEach((i) => {
-//   const idx = monthLabels.indexOf(i);
-//   if (i === monthName) {
-//     thisMonthTotalSales.splice(idx, 0, sumTotal.value)
-//     localStorage.setItem('thisMonthTotalSales', JSON.stringify(thisMonthTotalSales))
-//   }
-// })
-  // name: String,
-  // price: Number,
-  // amt: Number,
-  // subTotal: Number,
-
-// revenueByMonth.value.forEach(rev => {
-
-//   totalSales.push(rev.revenue)
-// })  
 
 //const res = ref<{name:string,price:number,amt:number,subTotal:number}[]>([])
-
-
 
 // Line chart config
 const data = {
@@ -162,7 +192,7 @@ const data = {
     {
       label: 'Monthly revenue',
       backgroundColor: '#00ff00',//'#f87979',
-      data: totalSalesByMonth,//thisMonthTotalSales,//[400, 39, 100, 40, 39, 80, 240, 0, 0, total.value, 0, 0]
+      data: ByMonth,//thisMonthTotalSales,//[400, 39, 100, 40, 39, 80, 240, 0, 0, total.value, 0, 0]
       borderColor: 'rgb(75, 192, 192)',
       tension: 0.1
     }
@@ -184,7 +214,8 @@ const pieData = {
   labels: ['Home', 'Store'],
   datasets: [
     {
-      backgroundColor: [ '#E46651', '#DD1B16'],
+      //backgroundColor: [ '#E46651', '#DD1B16'],
+      backgroundColor: [ '#DD1B16', '#a078bb'],
       data: [home.value, store.value]
     }
   ]
@@ -200,6 +231,21 @@ const options = {
     }
   }
 }
+
+// function getCallYearRevenue() {
+//   try {
+//     loadingYoY.value = true;
+
+//   } catch (error) {
+//     console.error('Error getting YearRev ', error)
+//   } finally {
+//     loadingYoY.value = false;
+//   }
+// }
+
+// onMounted(() => {
+//   getCallYearRevenue();
+// })
 
 </script>
 
@@ -264,13 +310,13 @@ const options = {
 }
 
 .top-customer-div {
-  display: flex;
+  /* display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
-  padding: 6px;
- 
-  height: 120px;
+  align-items: center; */
+  padding: 2px;
+  /* max-width: 320px; */
+  height: 200px;
   /* background-color: brown; */
 }
 

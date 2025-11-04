@@ -140,9 +140,11 @@ async function onSubmit () {
     console.log(message);
     onReset();
 
-    router.push("/").then(() => console.log("navigating to /...")).catch(e => console.log("push err ", e));
+    //router.push("/").then(() => console.log("navigating to /...")).catch(e => console.log("push err ", e));
+    router.push("/").catch(e => console.log("push err ", e));
   } catch (error) {
-    console.error("axios err", error);
+   // console.log("axios err", error);
+   console.log(error);
     alert(`Something went wrong. Please, try again.`);
   } finally {
     submitting.value = false;

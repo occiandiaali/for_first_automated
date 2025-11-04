@@ -176,7 +176,7 @@ function handleComplete(orderId: string|undefined) {
   postToArchive(orderId).then(() => {
     if(proceedToDel.value) {
       deleteFromOrders(orderId).then(() => {
-       location.reload()
+        location.reload()
       }).catch(e => console.error(e))
     } else {
       alert("Couldn't complete. Please, try again.")

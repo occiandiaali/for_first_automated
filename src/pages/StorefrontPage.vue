@@ -250,7 +250,8 @@ const fetchTodayOrders = async () => {
 }
 
 onMounted(() => {
-  fetchTodayOrders().then(() => console.log("Mounted fetchTodayOrders..")).catch(e => console.error(e))
+  //fetchTodayOrders().then(() => console.log("Mounted fetchTodayOrders..")).catch(e => console.error(e))
+  fetchTodayOrders().catch(e => console.error(e))
 })
 </script>
 

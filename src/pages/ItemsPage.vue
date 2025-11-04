@@ -91,7 +91,7 @@ type AlignType = "left" | "center" | "right";
     const fabricItems = ref(items)
         const  columns = [
         { name: 'itemName', label: 'Garment', field: 'name', align: 'left' as AlignType },
-        { name: 'itemPrice', label: 'Price', field: 'price', align: 'right' as AlignType },
+        { name: 'itemPrice', label: 'Unit', field: 'price', align: 'right' as AlignType },
         { name: 'actions', label: 'Actions', field: 'actions', align: 'center' as AlignType }
       ];
 
