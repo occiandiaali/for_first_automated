@@ -80,8 +80,8 @@ pickupPoint:"Store"
 
 //const monthlyTotals: number[] = new Array(monthNames.length - 1).fill(0);
 let ByMonth: number[] = [];
-const topCustomerName:string[] = [];
-const topCustomerSpend:number[] = [];
+let topCustomerName:string[] = [];
+let topCustomerSpend:number[] = [];
 
 export function useArchives() {
   const items = ref<ArchivedItem[]>([]);
@@ -111,7 +111,8 @@ export function useArchives() {
       const response = await axios.get<ArchivedItem[]>(`https://server-for-first-automated.onrender.com/api/admin/archive`, {withCredentials:true});
 
   //============================
-
+    const customerNames:string[] = [];
+    const customerSpends:number[] = [];
       let total = 0;
       let h = 0;
       let s = 0;
@@ -128,8 +129,8 @@ export function useArchives() {
       }
     } // v.title === monthName
     if (v.content.garments.length >= 3) {
-      topCustomerName.push(v.content.customer);
-      topCustomerSpend.push(v.content.totalDue)
+      customerNames.push(v.content.customer);
+      customerSpends.push(v.content.totalDue)
     }
     
 
@@ -138,6 +139,8 @@ export function useArchives() {
     // } 
   })
   sumTotal.value = total;
+  topCustomerName = customerNames;
+  topCustomerSpend = customerSpends;
 
   monthNames.forEach(m => {
   if (m === monthName) {
