@@ -9,7 +9,7 @@
       </div>
         <br/>
         <h5>Customers</h5>
-        <div class="q-pa-md">
+        <!-- <div class="q-pa-md">
           <q-btn color="teal" outline size="xs" label="Month" style="margin-left: 5%;">
             <q-menu>
               <q-list style="min-width: 60px;">
@@ -19,7 +19,7 @@
               </q-list>
             </q-menu>
           </q-btn>
-        </div>
+        </div> -->
          <q-page-sticky position="top-right" :offset="[18, 68]" id="export-btn">
             <q-btn fab icon="folder" color="teal-9" @click="exportData" />
           </q-page-sticky>
